@@ -1,0 +1,3 @@
+@model IEnumerable<Cine.Models.MiembroClub>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Club de Cine"; }
+<div class="container-fluid"><div class="d-flex justify-content-between mb-4"><h2 class="fw-bold">Club de Cine</h2><a asp-action="CrearMiembro" class="btn btn-danger">Inscribir miembro</a></div><div class="card border-0 shadow-sm"><table class="table mb-0"><thead class="table-light"><tr><th>Miembro</th><th>Código</th><th>Nivel</th><th>Beneficio</th><th>Puntos</th><th>Estado</th></tr></thead><tbody>@foreach(var m in Model){<tr><td>@m.Nombre<br/><small>@m.Email</small></td><td><code>@m.Codigo</code></td><td>@m.Nivel</td><td>@m.DescuentoPorcentaje.ToString("0.##")%</td><td>@m.Puntos</td><td>@(m.Activo ? "Activo" : "Inactivo")</td></tr>}</tbody></table></div></div>

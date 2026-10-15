@@ -1,0 +1,62 @@
+
+============================================================================
+C3. Estacionamiento FIFO - $2.00 por segundo
+============================================================================
+1. Entrada de auto
+2. Salida del primer auto
+3. Mostrar estacionamiento
+0. Volver / salir
+Opción: 1
+Placas: ABC-123
+Propietario: Ana
+Entrada confirmada: ABC-123 2026-10-14 10:00:00 UTC-06:00
+Placas  | Propietario | Entrada                      
+--------+-------------+------------------------------
+ABC-123 | Ana         | 2026-10-14 10:00:00 UTC-06:00
+Frente: ABC-123 | Final: ABC-123
+
+============================================================================
+C3. Estacionamiento FIFO - $2.00 por segundo
+============================================================================
+1. Entrada de auto
+2. Salida del primer auto
+3. Mostrar estacionamiento
+0. Volver / salir
+Opción: 1
+Placas: XYZ-987
+Propietario: Luis
+Entrada confirmada: XYZ-987 2026-10-14 10:00:00 UTC-06:00
+Placas  | Propietario | Entrada                      
+--------+-------------+------------------------------
+ABC-123 | Ana         | 2026-10-14 10:00:00 UTC-06:00
+XYZ-987 | Luis        | 2026-10-14 10:00:00 UTC-06:00
+Frente: ABC-123 | Final: XYZ-987
+
+============================================================================
+C3. Estacionamiento FIFO - $2.00 por segundo
+============================================================================
+1. Entrada de auto
+2. Salida del primer auto
+3. Mostrar estacionamiento
+0. Volver / salir
+Opción: 2
+
+RECIBO DE ESTACIONAMIENTO
+Placas: ABC-123 | Propietario: Ana
+Entrada: 2026-10-14 10:00:00 UTC-06:00 
+Salida: 2026-10-14 10:00:12 UTC-06:00
+Duración: 12.500 segundos | Tarifa: $2.00/segundo
+TOTAL A PAGAR: $25.00
+Placas  | Propietario | Entrada                      
+--------+-------------+------------------------------
+XYZ-987 | Luis        | 2026-10-14 10:00:00 UTC-06:00
+Frente: XYZ-987 | Final: XYZ-987
+
+============================================================================
+C3. Estacionamiento FIFO - $2.00 por segundo
+============================================================================
+1. Entrada de auto
+2. Salida del primer auto
+3. Mostrar estacionamiento
+0. Volver / salir
+Opción: 0

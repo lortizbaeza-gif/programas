@@ -1,0 +1,48 @@
+@model IEnumerable<Cine.Models.Pelicula>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Películas";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2 class="fw-bold mb-1">Gestión de Películas</h2><p class="text-muted mb-0">@(ViewBag.Sucursal != null ? $"Sucursal: {ViewBag.Sucursal.Nombre}" : "Todas las sucursales")</p></div>
+        <a asp-action="CrearPelicula" asp-route-sucursalId="@ViewBag.SucursalId" class="btn btn-danger">Nueva película</a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Título</th>
+                        <th>Género</th>
+                        <th>Director</th>
+                        <th>Salas asignadas</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pelicula in Model)
+                    {
+                        <tr>
+                            <td>@pelicula.Titulo</td>
+                            <td>@pelicula.Genero</td>
+                            <td>@pelicula.Director</td>
+                            <td>@foreach(var ps in pelicula.PeliculasSalas.OrderBy(ps => ps.Sala!.Letra)){<span class="badge bg-secondary me-1">Sala @ps.Sala?.Letra · @ps.Sala?.Tipo</span>}</td>
+                            <td>@(pelicula.Activa ? "Activa" : "Inactiva")</td>
+                            <td class="text-end">
+                                <a asp-action="EditarPelicula" asp-route-id="@pelicula.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <form asp-action="EliminarPelicula" asp-route-id="@pelicula.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

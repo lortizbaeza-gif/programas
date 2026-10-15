@@ -1,0 +1,52 @@
+
+============================================================================
+L1. Productos disponibles y retirados
+============================================================================
+1. Generar productos
+2. Retirar por clave
+3. Mostrar disponibles y retirados
+0. Volver / salir
+Opción: 1
+Cantidad de productos nuevos (1-100): 3
+Productos agregados.
+DISPONIBLES
+Clave | Nombre    | Cantidad | Precio 
+------+-----------+----------+--------
+1     | producto1 | 1        | $28.43 
+2     | producto2 | 4        | $82.61 
+3     | producto3 | 41       | $269.79
+RETIRADOS
+(Sin registros)
+Registros disponibles: 3 | retirados: 0
+Unidades disponibles: 46 | retiradas: 0
+
+============================================================================
+L1. Productos disponibles y retirados
+============================================================================
+1. Generar productos
+2. Retirar por clave
+3. Mostrar disponibles y retirados
+0. Volver / salir
+Opción: 2
+Clave a retirar: 2
+Producto retirado.
+DISPONIBLES
+Clave | Nombre    | Cantidad | Precio 
+------+-----------+----------+--------
+1     | producto1 | 1        | $28.43 
+3     | producto3 | 41       | $269.79
+RETIRADOS
+Clave | Nombre    | Cantidad | Precio
+------+-----------+----------+-------
+2     | producto2 | 4        | $82.61
+Registros disponibles: 2 | retirados: 1
+Unidades disponibles: 42 | retiradas: 4
+
+============================================================================
+L1. Productos disponibles y retirados
+============================================================================
+1. Generar productos
+2. Retirar por clave
+3. Mostrar disponibles y retirados
+0. Volver / salir
+Opción: 0

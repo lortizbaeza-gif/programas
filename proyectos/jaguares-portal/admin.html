@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaguares Control Panel - Administración</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <style>
+        :root {
+            --bg-dark: #070b0e;
+            --bg-card: rgba(17, 26, 34, 0.85);
+            --gold: #d4af37;
+            --water-blue: #3a8ebf;
+            --text-light: #ffffff;
+            --text-muted: #a0aec0;
+            --border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        /* Scrollbar Personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070b0e; }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--gold); 
+            border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(7, 11, 14, 0.8), rgba(7, 11, 14, 0.8)), url('LOGO.PNG');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-size: clamp(300px, 40vw, 500px);
+            color: var(--text-light);
+            padding: clamp(15px, 3vw, 40px);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .header-block { margin-bottom: 35px; }
+        .header-block h1 { color: var(--gold); font-size: 28px; margin-bottom: 5px; }
+        .header-block p { color: var(--text-muted); font-size: 14px; }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+
+        .metric-card span { display: block; color: var(--text-muted); font-size: 12px; text-transform: uppercase; margin-bottom: 8px; }
+        .metric-card h3 { font-size: 24px; font-weight: 600; }
+        .metric-card h3.highlight { color: var(--water-blue); }
+        .metric-small {
+            display: block;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-size: 12px;
+        }
+
+        .table-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: rgba(212, 175, 55, 0.05); color: var(--gold); font-size: 13px; padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        td { padding: 14px 18px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); color: #e2e8f0; }
+
+        .btn-whatsapp {
+            background-color: #25D366; color: #fff; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600;
+        }
+        .btn-whatsapp:hover { background-color: #20ba5a; }
+
+        .btn-pay {
+            background-color: #2563eb; color: #fff; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; margin-left: 8px;
+        }
+        .btn-pay:hover { background-color: #1d4ed8; }
+
+        .attendance-card {
+            background-color: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 22px;
+            margin-top: 20px;
+        }
+
+        .attendance-card h3 { margin-top: 0; color: var(--gold); }
+        .attendance-card .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .attendance-card label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+        .attendance-card input, .attendance-card select, .attendance-card textarea { width: 100%; padding: 11px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.16); color: #fff; box-sizing: border-box; }
+        .attendance-card textarea { min-height: 82px; resize: vertical; }
+
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+        .btn-gold {
+            background-color: var(--gold);
+            color: #070b0e;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+        .btn-gold:hover { background-color: #f3d376; }
+
+        /* Estilos para el Modal de Edición */
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal {
+            background: var(--bg-card); border-radius: 16px; padding: 25px; 
+            width: 90%; max-width: 500px; max-height:90vh; overflow-y:auto; border: 1px solid var(--border-color);
+        }
+        .modal h3 { margin: 0 0 20px 0; color: var(--gold); }
+        .modal .close { float: right; cursor: pointer; color: var(--text-muted); font-size: 20px; }
+        .modal .form-group { margin-bottom: 15px; text-align: left; }
+        .modal .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+        .modal .form-group input, .modal .form-group select, .modal .form-group textarea {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;
+        }
+        .show { display: flex !important; }
+
+        .pagination { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin:14px 0 28px; }
+        .pagination button { min-width:38px; padding:8px 11px; border-radius:7px; border:1px solid rgba(255,255,255,0.1); background:var(--bg-card); color:var(--text-light); cursor:pointer; }
+        .pagination button.active { background:var(--gold); color:#070b0e; font-weight:700; }
+        .pagination button:disabled { opacity:.45; cursor:not-allowed; }
+        .pagination-info { color:var(--text-muted); font-size:12px; margin-right:6px; }
+
+        /* Rediseño del portal administrativo */
+        :root { --purple:#8b5cf6; --purple-bright:#a855f7; --panel:#111116; --panel-soft:#18181f; }
+        html { scroll-behavior:smooth; }
+        body { padding:0; background:#08080b; background-image:none; color:#f8f5ed; }
+        .admin-shell { min-height:100vh; }
+        .admin-sidebar {
+            position:fixed; inset:0 auto 0 0; width:250px; padding:26px 18px; box-sizing:border-box;
+            background:linear-gradient(180deg,#111114 0%,#09090c 100%); border-right:1px solid rgba(212,175,55,.18);
+            z-index:1000; display:flex; flex-direction:column;
+        }
+        .admin-brand { display:flex; align-items:center; gap:12px; padding:0 8px 25px; border-bottom:1px solid rgba(255,255,255,.07); }
+        .admin-brand img { width:52px; height:52px; object-fit:cover; border-radius:14px; border:1px solid rgba(212,175,55,.55); }
+        .admin-brand strong { color:var(--gold); font-size:17px; letter-spacing:.4px; }
+        .admin-brand small { display:block; color:#8e8e9b; margin-top:3px; }
+        .admin-nav { display:grid; gap:9px; margin-top:28px; }
+        .admin-nav a { display:flex; align-items:center; gap:12px; padding:13px 14px; border-radius:10px; color:#c7c4cc; text-decoration:none; font-weight:700; transition:.2s ease; }
+        .admin-nav .nav-label { display:block; line-height:1.25; }
+        .admin-nav a:hover { color:#fff; background:rgba(139,92,246,.12); transform:translateX(2px); }
+        .admin-nav a.active { color:#fff; background:linear-gradient(90deg,var(--purple),#6d28d9); box-shadow:0 10px 24px rgba(139,92,246,.22); }
+        .nav-icon { width:27px; height:27px; display:grid; place-items:center; border-radius:8px; background:rgba(255,255,255,.08); font-size:13px; }
+        .sidebar-footer { margin-top:auto; color:#777581; font-size:11px; padding:12px 10px 0; }
+        .admin-content { margin-left:250px; padding:30px clamp(20px,3vw,46px) 60px; max-width:1500px; }
+        .dashboard-section { scroll-margin-top:25px; }
+        .section-kicker { color:var(--purple-bright); font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; }
+        .header-block { background:linear-gradient(135deg,rgba(139,92,246,.11),rgba(212,175,55,.05)); border:1px solid rgba(255,255,255,.07); border-radius:18px; padding:22px 24px; margin-bottom:22px; }
+        .header-block h1 { margin:0 0 7px; color:#fff; font-size:25px; }
+        .header-block p { margin:0; }
+        .metrics-row { grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-bottom:20px; }
+        .metric-card { position:relative; overflow:hidden; background:linear-gradient(145deg,#17171d,#101014); border:1px solid rgba(255,255,255,.07); border-radius:16px; padding:22px; }
+        .metric-card::before { content:""; position:absolute; left:0; top:0; width:4px; height:100%; background:linear-gradient(var(--gold),var(--purple)); }
+        .metric-card:hover { transform:translateY(-3px); border-color:rgba(212,175,55,.48); }
+        .metric-card span { color:#96929f; letter-spacing:.7px; }
+        .metric-card h3 { margin:8px 0 0; color:#fff; font-size:30px; }
+        .metric-card h3.highlight { color:var(--gold); }
+        .table-container, .attendance-card, .section-note { background:#121217; border:1px solid rgba(255,255,255,.075); border-radius:16px; box-shadow:0 18px 45px rgba(0,0,0,.18); }
+        .section-note { padding:20px 22px; box-sizing:border-box; }
+        .section-note h3 { margin:0 0 10px !important; line-height:1.3; }
+        .section-note p { line-height:1.5; }
+        .admin-view { display:none; animation:adminViewIn .22s ease; }
+        .admin-view.active { display:block; }
+        @keyframes adminViewIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+        .section-heading { display:flex; justify-content:space-between; align-items:end; gap:15px; margin:34px 0 14px; }
+        .section-heading h2 { color:#fff !important; margin:0 !important; font-size:21px !important; }
+        .section-heading p { margin:5px 0 0; color:#85818d; font-size:12px; }
+        th { color:var(--gold); background:rgba(212,175,55,.045); border-bottom-color:rgba(212,175,55,.24); text-transform:uppercase; letter-spacing:.65px; font-size:11px; }
+        td { border-bottom-color:rgba(255,255,255,.055); }
+        tbody tr { transition:background .18s ease; }
+        tbody tr:hover { background:rgba(139,92,246,.055); }
+        .btn-pay, .btn-whatsapp, .btn-gold { border-radius:9px; box-shadow:none; }
+        .btn-pay { background:var(--purple); }
+        .btn-pay:hover { background:#7c3aed; }
+        .btn-whatsapp { background:#b68d22; color:#09090b; }
+        .btn-whatsapp:hover { background:var(--gold); }
+        .btn-gold { background:linear-gradient(90deg,var(--gold),#f0d37a); }
+        input, select, textarea { outline:none; }
+        input:focus, select:focus, textarea:focus { border-color:var(--purple) !important; box-shadow:0 0 0 3px rgba(139,92,246,.12); }
+        .directory-toolbar { display:flex; gap:10px; flex-wrap:wrap; padding:13px; margin-bottom:12px; background:#121217; border:1px solid rgba(255,255,255,.075); border-radius:14px; }
+        .directory-toolbar input, .directory-toolbar select { min-height:40px; padding:0 13px; color:#fff; background:#0b0b0f; border:1px solid rgba(255,255,255,.1); border-radius:10px; box-sizing:border-box; }
+        .directory-toolbar input { flex:1 1 260px; }
+        .directory-toolbar select { flex:0 1 205px; }
+        .student-name { display:flex; align-items:center; gap:10px; font-weight:700; color:#fff; }
+        .student-avatar { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border-radius:50%; background:linear-gradient(135deg,var(--purple),#c026d3); color:#fff; font-size:11px; border:2px solid rgba(255,255,255,.12); }
+        .schedule-picker { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:8px; }
+        .schedule-option { display:flex !important; align-items:center; gap:9px; min-height:40px; padding:8px 10px; box-sizing:border-box; border:1px solid rgba(255,255,255,.1); border-radius:9px; background:rgba(0,0,0,.18); color:#ddd9e5 !important; cursor:pointer; }
+        .schedule-option:hover { border-color:rgba(212,175,55,.55); }
+        .schedule-option input { width:16px !important; height:16px; margin:0; accent-color:var(--purple); box-shadow:none !important; }
+        .schedule-day { grid-column:1/-1; margin-top:5px; color:var(--gold); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
+        .receipt-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+        .receipt-summary > div { padding:18px; border-radius:14px; background:linear-gradient(145deg,#17171d,#101014); border:1px solid rgba(255,255,255,.075); }
+        .receipt-summary span { display:block; color:#8f8b98; font-size:11px; text-transform:uppercase; letter-spacing:.7px; }
+        .receipt-summary strong { display:block; margin-top:7px; color:var(--gold); font-size:23px; }
+        .gallery-admin-form { display:grid; grid-template-columns:minmax(180px,1fr) minmax(220px,1fr) auto; gap:10px; padding:16px; background:#121217; border:1px solid rgba(255,255,255,.075); border-radius:14px; }
+        .gallery-admin-form input { min-height:44px; padding:10px 12px; box-sizing:border-box; color:#fff; background:#0b0b0f; border:1px solid rgba(255,255,255,.1); border-radius:9px; }
+        .gallery-admin-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:14px; }
+        .gallery-admin-item { min-height:180px; position:relative; overflow:hidden; border-radius:14px; background-size:cover; background-position:center; border:1px solid rgba(255,255,255,.1); }
+        .gallery-admin-item::after { content:""; position:absolute; inset:45% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.9)); }
+        .gallery-admin-item span { position:absolute; z-index:2; left:13px; right:50px; bottom:14px; color:#fff; font-weight:700; }
+        .gallery-admin-item button { position:absolute; z-index:3; right:10px; top:10px; border:0; border-radius:8px; padding:7px 9px; background:#ef4444; color:#fff; cursor:pointer; }
+        .modal { background:#15151b; box-shadow:0 24px 80px rgba(0,0,0,.6); }
+
+        @media (max-width:900px) {
+            .admin-sidebar { position:sticky; top:0; width:100%; height:auto; padding:10px 14px; flex-direction:row; align-items:center; overflow-x:auto; }
+            .admin-brand { border:0; padding:0 12px 0 0; min-width:max-content; }
+            .admin-brand img { width:38px; height:38px; }
+            .admin-brand small, .sidebar-footer { display:none; }
+            .admin-nav { display:flex; margin:0; gap:6px; }
+            .admin-nav a { white-space:nowrap; padding:9px 11px; font-size:12px; }
+            .admin-content { margin-left:0; padding:20px 14px 45px; }
+            .metrics-row { grid-template-columns:1fr; }
+            .receipt-summary { grid-template-columns:1fr; }
+            .gallery-admin-form, .gallery-admin-grid { grid-template-columns:1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .header-block { text-align: center; }
+            .header-block div { width: 100%; }
+            .btn-pay, .btn-whatsapp, .btn-gold { 
+                width: 100%; 
+                margin: 5px 0;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <img src="recibo-logo.png" alt="Logo de Jaguares Swim">
+            <div><strong>Jaguares Swim</strong><small>Portal administrativo</small></div>
+        </div>
+        <nav class="admin-nav" aria-label="Navegación administrativa">
+            <a href="#dashboard" data-view="dashboard" class="active"><span class="nav-icon">⌂</span><span class="nav-label">Dashboard</span></a>
+            <a href="#alumnos" data-view="alumnos"><span class="nav-icon">♟</span><span class="nav-label">Alumnos</span></a>
+            <a href="#planificacion" data-view="planificacion"><span class="nav-icon">◷</span><span class="nav-label">Planificación y Precios</span></a>
+            <a href="#informacion" data-view="informacion"><span class="nav-icon">i</span><span class="nav-label">Información</span></a>
+            <a href="#recibos" data-view="recibos"><span class="nav-icon">▤</span><span class="nav-label">Recibos</span></a>
+        </nav>
+        <div class="sidebar-footer">Jaguares Swim · Control interno</div>
+    </aside>
+    <main class="admin-content">
+    <section class="admin-view active" data-view-panel="dashboard">
+
+    <div id="dashboard" class="header-block dashboard-section" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div>
+            <span class="section-kicker">Dashboard</span>
+            <h1>Panel de Control de Administración</h1>
+            <p>Panel Privado — Administración interna de la alberca y finanzas</p>
+            <div style="margin-top: 10px; display: flex; gap: 15px;">
+                <a href="https://www.instagram.com/jaguares_swim" target="_blank" style="color: var(--gold); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 5px;">📸 @jaguares_swim</a>
+                <a href="https://www.facebook.com/search/top?q=JAguares%20MX" target="_blank" style="color: var(--gold); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 5px;">🔵 JAguares MX</a>
+            </div>
+        </div>
+        <button class="btn-pay" style="background:#ef4444; border:none; cursor:pointer;" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+
+    <div class="metrics-row">
+        <div class="metric-card">
+            <span>Alumnos Totales</span>
+            <h3 id="totalAlumnosCount">0</h3>
+            <span class="metric-small" id="ultimaActualizacion">Cargando...</span>
+        </div>
+        <div class="metric-card">
+            <span>Ingresos Mensuales Estimados</span>
+            <h3 id="ingresosEstimados" class="highlight">$0</h3>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <span class="metric-small">Pagados: <b id="pagosPagadosCount">0</b></span>
+                <span class="metric-small">Pendientes: <b id="pagosPendientesCount">0</b></span>
+            </div>
+        </div>
+        <div class="metric-card">
+            <span>Modalidades Activas</span>
+            <h3 id="modalidadesActivas">0</h3>
+        </div>
+    </div>
+
+    <div class="table-container" style="padding:20px; margin-bottom:20px;">
+        <h3 style="margin-top:0; color:var(--gold); font-size:16px;">Tendencia de Ingresos</h3>
+        <canvas id="incomeChart" style="max-height:200px;"></canvas>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px; align-items:center;">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div>
+                <label for="filtroDesde" style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Desde</label>
+                <input type="date" id="filtroDesde" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.16); color:#fff;" />
+            </div>
+            <div>
+                <label for="filtroHasta" style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Hasta</label>
+                <input type="date" id="filtroHasta" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.16); color:#fff;" />
+            </div>
+            <div>
+                <label for="filterEstadoPago" style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Estado</label>
+                <select id="filterEstadoPago" onchange="aplicarFiltrosPagos()" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.16); color:#fff;">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendientes</option>
+                    <option value="pagado">Pagados</option>
+                </select>
+            </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <button class="btn-pay" style="padding:10px 16px;" onclick="exportPaymentsExcel()">Pagos Excel</button>
+            <button class="btn-pay" style="padding:10px 16px;" onclick="exportPaymentsPdf()">Pagos PDF</button>
+            <button class="btn-whatsapp" style="padding:10px 16px; background:#8b5cf6;" onclick="exportAttendanceExcel()">Asistencias Excel</button>
+            <button class="btn-whatsapp" style="padding:10px 16px; background:#8b5cf6;" onclick="exportAttendancePdf()">Asistencias PDF</button>
+        </div>
+    </div>
+
+    <div class="section-heading"><div><span class="section-kicker">Finanzas</span><h2>Administración de Pagos & Recordatorios</h2><p>Mensualidades, vencimientos y seguimiento de alumnos</p></div></div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Modalidad</th>
+                    <th>Mensualidad</th>
+                    <th>Vence</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAlumnosBody">
+                <!-- Se cargan automático desde C# -->
+            </tbody>
+        </table>
+    </div>
+    <div id="pagosPaginacion" class="pagination" aria-label="Paginación de pagos"></div>
+
+    </section>
+    <section class="admin-view" data-view-panel="planificacion">
+
+    <div class="section-heading" style="margin-top:0;">
+        <div><span class="section-kicker">Planificación</span><h2>Asistencias, Clases y Precios</h2><p>Control operativo de Jaguares Swim</p></div>
+    </div>
+    <div class="section-note" style="margin-top:0;">
+        <h3 style="margin-top:0; color: var(--gold);">Resumen de asistencia reciente</h3>
+        <p id="asistenciaResumen" style="margin:0;">Cargando datos de asistencia...</p>
+    </div>
+
+    <div class="attendance-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3>Registrar asistencia</h3>
+            <button class="btn-whatsapp" onclick="toggleScanner()" id="btnScanner">📸 Abrir Escáner QR</button>
+        </div>
+        
+        <div id="qr-reader-container" style="display:none; margin-bottom:20px;">
+            <div id="qr-reader" style="width:100%; max-width:400px; margin:auto; border-radius:12px; overflow:hidden;"></div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="personaTelefono">Teléfono del alumno</label>
+                <input type="tel" id="personaTelefono" placeholder="Ej. 9991234567">
+            </div>
+            <div>
+                <label for="asistenciaFecha">Fecha</label>
+                <input type="date" id="asistenciaFecha">
+            </div>
+        </div>
+        <div class="form-row">
+            <div>
+                <label for="asistioSelect">Asistió</label>
+                <select id="asistioSelect">
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+            <div>
+                <label for="asistenciaNota">Nota</label>
+                <textarea id="asistenciaNota" placeholder="Opcional"></textarea>
+            </div>
+        </div>
+        <button class="btn-gold" style="width:auto; padding: 12px 20px;" onclick="registrarAsistencia()">Guardar asistencia</button>
+        <p id="asistenciaMessage" style="margin: 14px 0 0 0; font-size: 13px; color: #cbd5e1;"></p>
+    </div>
+
+    <div class="table-container" style="margin-top: 18px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Alumno</th>
+                    <th>Asistió</th>
+                    <th>Nota</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAsistenciasBody">
+                <!-- Se cargan automático desde C# -->
+            </tbody>
+        </table>
+    </div>
+
+    </section>
+    <section class="admin-view" data-view-panel="alumnos">
+
+    <div id="alumnos" class="section-heading dashboard-section">
+        <div><span class="section-kicker">Alumnos</span><h2>Directorio de Alumnos</h2><p>Alumnos registrados en Jaguares Swim</p></div>
+    </div>
+    <div class="directory-toolbar">
+        <input id="buscarAlumno" type="search" placeholder="Buscar por nombre, teléfono o modalidad" oninput="filtrarDirectorioAlumnos()">
+        <select id="filtroModalidadAlumno" onchange="filtrarDirectorioAlumnos()"><option value="">Todas las modalidades</option></select>
+        <select id="filtroEstadoAlumno" onchange="filtrarDirectorioAlumnos()">
+            <option value="">Todos los estatus</option><option value="activo">Activos</option><option value="pendiente">Pendientes</option><option value="inactivo">Inactivos</option>
+        </select>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Modalidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaAlumnosGestionBody">
+                <!-- Cargado mediante JS -->
+            </tbody>
+        </table>
+    </div>
+
+    </section>
+    <section class="admin-view" data-view-panel="informacion">
+
+    <div id="informacion" class="section-heading dashboard-section" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:0; margin-bottom:15px;">
+        <div><span class="section-kicker">Información pública</span><h2>Modalidades y descripciones</h2><p>Este contenido aparece en la página principal</p></div>
+        <button class="btn-gold" onclick="abrirNuevaClase('Principiante')">+ Agregar modalidad</button>
+    </div>
+    <h3 style="color:var(--gold); margin:24px 0 12px;">Clases generales</h3>
+    <div class="table-container">
+        <table id="tablaClasesAdmin">
+            <thead>
+                <tr>
+                    <th>Horario / Nombre</th>
+                    <th>Descripción</th>
+                    <th>Costo</th>
+                    <th>Cupo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaClasesBody">
+                <!-- Se carga vía JS -->
+            </tbody>
+        </table>
+    </div>
+    <div class="section-heading" style="margin-top:32px;">
+        <div><span class="section-kicker">Exclusivo</span><h2>Clases para niños</h2><p>Ubicación: Echeverría Fitness Center</p></div>
+        <button class="btn-gold" onclick="abrirNuevaClase('Niños')">+ Agregar clase para niños</button>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead><tr><th>Horario / Nombre</th><th>Descripción</th><th>Costo</th><th>Cupo</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaClasesNinosBody"></tbody>
+        </table>
+    </div>
+    <div class="section-heading" style="margin-top:34px;">
+        <div><span class="section-kicker">Contenido visual</span><h2>Galería de la página principal</h2><p>Agrega fotografías y el texto que aparecerá sobre cada imagen</p></div>
+    </div>
+    <div class="gallery-admin-form">
+        <input id="galeriaTitulo" type="text" maxlength="60" placeholder="Título de la fotografía">
+        <input id="galeriaArchivo" type="file" accept="image/jpeg,image/png,image/webp">
+        <button class="btn-gold" type="button" onclick="agregarFotoGaleria()">Agregar foto</button>
+    </div>
+    <p id="galeriaMensaje" style="color:var(--text-muted);font-size:12px;"></p>
+    <div id="galeriaAdminGrid" class="gallery-admin-grid"></div>
+    </section>
+
+    <section class="admin-view" data-view-panel="recibos">
+        <div id="recibos" class="section-heading dashboard-section" style="margin-top:0;">
+            <div><span class="section-kicker">Comprobantes</span><h2>Recibos de pago</h2><p>Recibos creados al aprobar pagos desde este portal</p></div>
+        </div>
+        <div class="receipt-summary">
+            <div><span>Recibos generados</span><strong id="totalRecibos">0</strong></div>
+            <div><span>Efectivo</span><strong id="totalRecibosEfectivo">0</strong></div>
+            <div><span>Transferencia</span><strong id="totalRecibosTransferencia">0</strong></div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Folio</th><th>Alumno</th><th>Modalidad</th><th>Monto</th><th>Fecha</th><th>Método</th><th>Acciones</th></tr></thead>
+                <tbody id="tablaRecibosBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal para Editar Alumno -->
+    <div id="modalEditarAlumno" class="modal-backdrop">
+        <div class="modal">
+            <span class="close" onclick="cerrarModalAlumno()">✕</span>
+            <h3>Editar Alumno</h3>
+            <input type="hidden" id="editAlumnoId">
+            <div class="attendance-card" style="background:transparent; border:none; padding:0;">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="editAlumnoNombre">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="editAlumnoTelefono">
+                </div>
+                <div class="form-group">
+                    <label>Estado del Alumno</label>
+                    <select id="editAlumnoActivo">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Modalidad</label>
+                    <select id="editAlumnoClaseId">
+                        <!-- Se llena dinámicamente -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nota para el alumno</label>
+                    <textarea id="editAlumnoNota" placeholder="Escribe un anuncio o recordatorio..." style="min-height:100px;"></textarea>
+                </div>
+                <div style="margin-top:20px;">
+                    <button class="btn-gold" onclick="guardarAlumno()" style="width:100%;">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Clase -->
+    <div id="modalEditarClase" class="modal-backdrop">
+        <div class="modal">
+            <span class="close" onclick="cerrarModalClase()">✕</span>
+            <h3 id="modalClaseTitulo">Editar Modalidad / Clase</h3>
+            <input type="hidden" id="editClaseId">
+            <div class="form-group">
+                <label>Nombre / Horario de la Modalidad</label>
+                <input type="text" id="editClaseHorario">
+            </div>
+            <div class="form-group">
+                <label>Costo Mensual ($)</label>
+                <input type="number" id="editClaseCosto">
+            </div>
+            <div class="form-group">
+                <label>Cupo Máximo</label>
+                <input type="number" id="editClaseCupo">
+            </div>
+            <div class="form-group">
+                <label>Nivel</label>
+                <select id="editClaseNivel" onchange="actualizarVisibilidadHorariosNinos()">
+                    <option value="Principiante">Principiante</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                    <option value="Niños">Niños</option>
+                </select>
+            </div>
+            <div class="form-group" id="grupoHorariosNinos" style="display:none;">
+                <label>Horarios disponibles para niños</label>
+                <div class="schedule-picker">
+                    <div class="schedule-day">Lunes a viernes</div>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="L-V 3:00–4:00 pm">3:00 a 4:00 pm</label>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="L-V 4:00–5:00 pm">4:00 a 5:00 pm</label>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="L-V 5:00–6:00 pm">5:00 a 6:00 pm</label>
+                    <div class="schedule-day">Sábados</div>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="Sáb 7:00–8:00 am">7:00 a 8:00 am</label>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="Sáb 8:00–9:00 am">8:00 a 9:00 am</label>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="Sáb 9:00–10:00 am">9:00 a 10:00 am</label>
+                    <label class="schedule-option"><input type="checkbox" name="horarioNinos" value="Sáb 10:00–11:00 am">10:00 a 11:00 am</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descripción / Detalles</label>
+                <textarea id="editClaseDescripcion"></textarea>
+            </div>
+            <div style="margin-top:20px;">
+                <button class="btn-gold" onclick="guardarClase()" style="width:100%;">Guardar Clase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Fecha de Vencimiento del Pago -->
+    <div id="modalEditarPago" class="modal-backdrop">
+        <div class="modal">
+            <span class="close" onclick="cerrarModalPago()">✕</span>
+            <h3>Editar Fecha de Vencimiento del Pago</h3>
+            <input type="hidden" id="editPagoId">
+            <div class="form-group">
+                <label>Nueva Fecha de Vencimiento</label>
+                <input type="date" id="editPagoFechaVencimiento">
+            </div>
+            <div style="margin-top:20px;">
+                <button class="btn-gold" onclick="guardarPago()" style="width:100%;">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    </main>
+    </div>
+
+    <script>
+        // Guard de sesión: si no hay token de administrador, volvemos al login.
+        if (!JaguaresApi.getToken()) {
+            window.location.href = '/admin-login.html';
+        }
+
+        // Chart instance holder
+        let incomeChartInstance = null;
+        let listaAlumnosLocal = [];
+        let listaClasesLocal = [];
+        let listaPagosUnicos = [];
+        let paginaPagosActual = 1;
+        const pagosPorPagina = 10;
+
+        const pagosApiUrl = '/api/Pagos';
+        const asistenciasApiUrl = '/api/Asistencias';
+        const alumnoConsultaUrl = '/api/Alumnos/consulta';
+        const alumnosApiUrl = '/api/Alumnos';
+
+        async function downloadReport(url, filename) {
+            try {
+                const respuesta = await apiFetch(url);
+                if (respuesta.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                if (!respuesta.ok) {
+                    console.error('Error descargando reporte:', respuesta.statusText);
+                    return;
+                }
+
+                const blob = await respuesta.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error('Error descargando reporte:', error);
+            }
+        }
+
+        function buildDateQuery() {
+            const desde = document.getElementById('filtroDesde').value;
+            const hasta = document.getElementById('filtroHasta').value;
+            const params = new URLSearchParams();
+            if (desde) params.append('desde', desde);
+            if (hasta) params.append('hasta', hasta);
+            return params.toString();
+        }
+
+        function exportPaymentsExcel() {
+            const query = buildFilterQuery();
+            downloadReport(`/api/reports/pagos/excel${query ? `?${query}` : ''}`, 'reportes_pagos.csv');
+        }
+
+        async function exportPaymentsPdf() {
+            const query = buildFilterQuery();
+            try {
+                const respuesta = await apiFetch(`${pagosApiUrl}${query ? `?${query}` : ''}`);
+                if (respuesta.status === 401) { window.location.href = '/admin-login.html'; return; }
+                const pagos = await respuesta.json();
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(18);
+                doc.text("Reporte de Pagos - Jaguares Swim", 14, 20);
+                doc.setFontSize(10);
+                doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 28);
+
+                // Función para limpiar texto de caracteres no compatibles con fuentes estándar de PDF
+                const clean = (str) => (str || '')
+                    .replace(/\u2013/g, '-') // Cambiar guion largo por guion estándar
+                    .replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '') // Eliminar emojis y caracteres no latinos
+                    .replace(/\s+/g, ' ').trim();
+
+                const tableData = pagos.map(p => [
+                    clean(p.nombreCompleto),
+                    clean(p.modalidad),
+                    `$${p.monto}`,
+                    new Date(p.fechaVencimiento).toLocaleDateString('es-MX'),
+                    p.estaPagado ? "Pagado" : "Pendiente"
+                ]);
+
+                doc.autoTable({
+                    head: [['Alumno', 'Modalidad', 'Monto', 'Vencimiento', 'Estado']],
+                    body: tableData,
+                    startY: 35,
+                    theme: 'grid',
+                    headStyles: { fillColor: [212, 175, 55] }
+                });
+
+                doc.save(`pagos_jaguares_${new Date().getTime()}.pdf`);
+            } catch (error) {
+                console.error('Error generando PDF:', error);
+                alert('No se pudo generar el PDF. Revisa la consola.');
+            }
+        }
+
+        function exportAttendanceExcel() {
+            const query = buildFilterQuery();
+            downloadReport(`/api/reports/asistencias/excel${query ? `?${query}` : ''}`, 'reportes_asistencias.csv');
+        }
+
+        async function exportAttendancePdf() {
+            const query = buildFilterQuery();
+            try {
+                const respuesta = await apiFetch(`${asistenciasApiUrl}${query ? `?${query}` : ''}`);
+                if (respuesta.status === 401) { window.location.href = '/admin-login.html'; return; }
+                const asistencias = await respuesta.json();
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFontSize(18);
+                doc.text("Reporte de Asistencias - Jaguares Swim", 14, 20);
+                doc.setFontSize(10);
+                doc.text(`Generado el: ${new Date().toLocaleString()}`, 14, 28);
+
+                // Función para limpiar texto de caracteres no compatibles con fuentes estándar de PDF
+                const clean = (str) => (str || '')
+                    .replace(/\u2013/g, '-')
+                    .replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '')
+                    .replace(/\s+/g, ' ').trim();
+
+                const tableData = asistencias.map(a => [
+                    new Date(a.fecha).toLocaleDateString('es-MX'),
+                    clean(a.nombreCompleto),
+                    a.asistio ? "SI" : "NO",
+                    clean(a.nota || "-")
+                ]);
+
+                doc.autoTable({
+                    head: [['Fecha', 'Alumno', 'Asistió', 'Nota']],
+                    body: tableData,
+                    startY: 35,
+                    theme: 'grid',
+                    headStyles: { fillColor: [58, 142, 191] }
+                });
+
+                doc.save(`asistencias_jaguares_${new Date().getTime()}.pdf`);
+            } catch (error) {
+                console.error('Error generando PDF:', error);
+                alert('No se pudo generar el PDF. Revisa la consola.');
+            }
+        }
+
+        function buildFilterQuery() {
+            const estado = document.getElementById('filterEstadoPago').value;
+            const desde = document.getElementById('filtroDesde').value;
+            const hasta = document.getElementById('filtroHasta').value;
+            const params = new URLSearchParams();
+            if (estado) params.append('estado', estado);
+            if (desde) params.append('desde', desde);
+            if (hasta) params.append('hasta', hasta);
+            return params.toString();
+        }
+
+        function animateNumber(id, target) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const increment = target / 30; // 30 pasos para la animación
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    el.innerText = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    el.innerText = Math.floor(current).toLocaleString();
+                }
+            }, 20);
+        }
+
+        function claveAlumnoPago(pago) {
+            const telefono = String(pago.telefono || '').replace(/\D/g, '');
+            const nombre = String(pago.nombreCompleto || '')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .trim().replace(/\s+/g, ' ').toLowerCase();
+            return telefono || nombre;
+        }
+
+        function obtenerPagosUnicos(pagos) {
+            const unicos = new Map();
+            pagos.forEach(pago => {
+                const clave = claveAlumnoPago(pago);
+                if (!clave) return;
+                const actual = unicos.get(clave);
+                if (!actual) {
+                    unicos.set(clave, pago);
+                    return;
+                }
+
+                // Se muestra un solo registro por persona. Tiene prioridad el pendiente
+                // más próximo; si todos están pagados, se conserva el más reciente.
+                const fechaPago = new Date(pago.fechaVencimiento || 0).getTime();
+                const fechaActual = new Date(actual.fechaVencimiento || 0).getTime();
+                const reemplazar = (!pago.estaPagado && actual.estaPagado)
+                    || (pago.estaPagado === actual.estaPagado
+                        && (pago.estaPagado ? fechaPago > fechaActual : fechaPago < fechaActual));
+                if (reemplazar) unicos.set(clave, pago);
+            });
+            return Array.from(unicos.values()).sort((a, b) =>
+                String(a.nombreCompleto || '').localeCompare(String(b.nombreCompleto || ''), 'es', { sensitivity: 'base' })
+            );
+        }
+
+        function agregarBotonAccion(contenedor, texto, clase, accion, estilo) {
+            const boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = clase;
+            boton.textContent = texto;
+            if (estilo) boton.style.cssText = estilo;
+            boton.addEventListener('click', accion);
+            contenedor.appendChild(boton);
+        }
+
+        function renderizarPaginaPagos() {
+            const tbody = document.getElementById('tablaAlumnosBody');
+            tbody.innerHTML = '';
+            const inicio = (paginaPagosActual - 1) * pagosPorPagina;
+            const pagina = listaPagosUnicos.slice(inicio, inicio + pagosPorPagina);
+
+            pagina.forEach(pago => {
+                const fila = document.createElement('tr');
+                const valores = [
+                    pago.nombreCompleto || '-', pago.modalidad || '-',
+                    `$${Number(pago.monto || 0).toFixed(0)}`,
+                    pago.fechaVencimiento ? new Date(pago.fechaVencimiento).toLocaleDateString('es-MX') : '-'
+                ];
+                valores.forEach(valor => {
+                    const td = document.createElement('td');
+                    td.textContent = valor;
+                    fila.appendChild(td);
+                });
+
+                const estado = document.createElement('td');
+                estado.innerHTML = pago.estaPagado
+                    ? '<span class="status-badge" style="background-color:rgba(16,185,129,.16);color:#10b981;">Pagado</span>'
+                    : '<span class="status-badge">Pendiente</span>';
+                fila.appendChild(estado);
+
+                const acciones = document.createElement('td');
+                agregarBotonAccion(acciones, '📲 Recordar', 'btn-whatsapp', () =>
+                    enviarRecordatorioPago(pago.nombreCompleto, pago.telefono, pago.monto));
+                if (!pago.estaPagado) {
+                    agregarBotonAccion(acciones, 'Marcar pagado', 'btn-pay', () => marcarPagado(pago.id));
+                }
+                agregarBotonAccion(acciones, '✏️ Editar fecha', 'btn-pay', () =>
+                    abrirEditarPago(pago.id, new Date(pago.fechaVencimiento).toISOString().split('T')[0]), 'background:#8b5cf6;');
+                if (pago.comprobanteUrl) {
+                    const enlace = document.createElement('a');
+                    enlace.href = JaguaresApi.url(pago.comprobanteUrl);
+                    enlace.target = '_blank';
+                    enlace.rel = 'noopener';
+                    enlace.className = 'btn-pay';
+                    enlace.style.cssText = 'background:#64748b;text-decoration:none;display:inline-block;';
+                    enlace.textContent = 'Ver Recibo';
+                    acciones.appendChild(enlace);
+                }
+                fila.appendChild(acciones);
+                tbody.appendChild(fila);
+            });
+
+            renderizarPaginacionPagos();
+        }
+
+        function renderizarPaginacionPagos() {
+            const contenedor = document.getElementById('pagosPaginacion');
+            contenedor.innerHTML = '';
+            const total = listaPagosUnicos.length;
+            const paginas = Math.max(1, Math.ceil(total / pagosPorPagina));
+            const inicio = total ? (paginaPagosActual - 1) * pagosPorPagina + 1 : 0;
+            const fin = Math.min(paginaPagosActual * pagosPorPagina, total);
+            const info = document.createElement('span');
+            info.className = 'pagination-info';
+            info.textContent = `${inicio}-${fin} de ${total} personas`;
+            contenedor.appendChild(info);
+
+            const crear = (texto, pagina, deshabilitado, activa = false) => {
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.textContent = texto;
+                boton.disabled = deshabilitado;
+                if (activa) boton.classList.add('active');
+                boton.addEventListener('click', () => {
+                    paginaPagosActual = pagina;
+                    renderizarPaginaPagos();
+                });
+                contenedor.appendChild(boton);
+            };
+            crear('‹', paginaPagosActual - 1, paginaPagosActual === 1);
+            for (let i = 1; i <= paginas; i++) crear(String(i), i, false, i === paginaPagosActual);
+            crear('›', paginaPagosActual + 1, paginaPagosActual === paginas);
+        }
+
+        function aplicarFiltrosPagos() {
+            paginaPagosActual = 1;
+            cargarPagos();
+        }
+
+        async function cargarPagos() {
+            try {
+                const query = buildFilterQuery();
+                const cacheBuster = `cb=${new Date().getTime()}`;
+                const fullQuery = query ? `?${query}&${cacheBuster}` : `?${cacheBuster}`;
+                const respuesta = await apiFetch(`${pagosApiUrl}${fullQuery}`);
+                if (respuesta.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                const pagos = await respuesta.json();
+                const tbody = document.getElementById('tablaAlumnosBody');
+                tbody.innerHTML = '';
+
+                let ingresos = 0;
+                let pagosPagados = 0;
+                let pendientes = 0;
+                const modalidades = new Set();
+
+                pagos.forEach(pago => {
+                    ingresos += pago.monto ?? 0;
+                    modalidades.add(pago.modalidad || 'Sin modalidad');
+                    if (pago.estaPagado) pagosPagados++;
+                    else pendientes++;
+                });
+
+                listaPagosUnicos = obtenerPagosUnicos(pagos);
+                const totalPaginas = Math.max(1, Math.ceil(listaPagosUnicos.length / pagosPorPagina));
+                paginaPagosActual = Math.min(paginaPagosActual, totalPaginas);
+                renderizarPaginaPagos();
+
+                animateNumber('totalAlumnosCount', listaPagosUnicos.length);
+                document.getElementById('ingresosEstimados').innerText = `$${ingresos.toLocaleString()}`;
+                document.getElementById('modalidadesActivas').innerText = modalidades.size;
+                document.getElementById('pagosPagadosCount').innerText = pagosPagados;
+                document.getElementById('pagosPendientesCount').innerText = pendientes;
+                document.getElementById('ultimaActualizacion').innerText = new Date().toLocaleString('es-MX');
+
+                // Construir datos de tendencia de ingresos (últimos 6 meses)
+                try {
+                    // Determinar el mes final según los pagos (si hay pagos en meses futuros)
+                    let maxDate = new Date();
+                    pagos.forEach(p => {
+                        if (p.fechaVencimiento) {
+                            const d = new Date(p.fechaVencimiento);
+                            if (d > maxDate) maxDate = d;
+                        }
+                    });
+                    const months = [];
+                    for (let i = 5; i >= 0; i--) {
+                        const d = new Date(maxDate.getFullYear(), maxDate.getMonth() - i, 1);
+                        const label = d.toLocaleString('es-MX', { month: 'short', year: 'numeric' });
+                        months.push({ key: `${d.getFullYear()}-${d.getMonth() + 1}`, label, date: d });
+                    }
+
+                    const sums = months.map(m => 0);
+                    pagos.forEach(p => {
+                        const fecha = p.fechaVencimiento ? new Date(p.fechaVencimiento) : null;
+                        if (!fecha) return;
+                        const key = `${fecha.getFullYear()}-${fecha.getMonth() + 1}`;
+                        const idx = months.findIndex(m => m.key === key);
+                        if (idx >= 0) {
+                            sums[idx] += Number(p.monto ?? 0);
+                        }
+                    });
+
+                    const ctx = document.getElementById('incomeChart').getContext('2d');
+                    if (incomeChartInstance) {
+                        incomeChartInstance.destroy();
+                    }
+                    incomeChartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: months.map(m => m.label),
+                            datasets: [{
+                                label: 'Ingresos MXN',
+                                data: sums,
+                                borderColor: '#d4af37',
+                                backgroundColor: 'rgba(139,92,246,0.16)',
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true }
+                            },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                } catch (chartErr) {
+                    console.error('Error construyendo gráfica de ingresos:', chartErr);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function cargarAsistencias() {
+            try {
+                const query = buildFilterQuery();
+                const cacheBuster = `cb=${new Date().getTime()}`;
+                const fullQuery = query ? `${query}&${cacheBuster}` : `?${cacheBuster}`;
+                const respuesta = await apiFetch(`${asistenciasApiUrl}${fullQuery}`);
+                if (respuesta.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                const asistencias = await respuesta.json();
+                const tbody = document.getElementById('tablaAsistenciasBody');
+                const resumen = document.getElementById('asistenciaResumen');
+                tbody.innerHTML = '';
+
+                const total = asistencias.length;
+                const asistidos = asistencias.filter(a => a.asistio).length;
+                const faltas = total - asistidos;
+                resumen.innerText = `Últimos ${total} registros de asistencia: ${asistidos} asistencias y ${faltas} faltas.`;
+
+                asistencias.forEach(asistencia => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${new Date(asistencia.fecha).toLocaleDateString('es-MX')}</td>
+                        <td>${asistencia.nombreCompleto}</td>
+                        <td>${asistencia.asistio ? '✅ Sí' : '❌ No'}</td>
+                        <td>${asistencia.nota || '-'}</td>
+                        <td>
+                            <button class="btn-whatsapp" style="background:#3a8ebf;" onclick="enviarAvisoAsistencia('${asistencia.nombreCompleto}', '${asistencia.telefono}', '${new Date(asistencia.fecha).toLocaleDateString()}', ${asistencia.asistio})">📲 Avisar</button>
+                            <button class="btn-pay" style="background:#ef4444; margin-left:5px;" onclick="eliminarAsistencia(${asistencia.id})">🗑️ Borrar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error('Error cargando asistencias:', error);
+            }
+        }
+
+        // Cargar todas las modalidades desde la API y actualizar el contador
+        async function cargarModalidades() {
+            try {
+                const respuesta = await apiFetch('/api/Clases');
+                if (respuesta.status === 401) {
+                    // no debería pasar, pero por si acaso
+                    document.getElementById('modalidadesActivas').innerText = '0';
+                    return;
+                }
+                const clases = await respuesta.json();
+                document.getElementById('modalidadesActivas').innerText = Array.isArray(clases) ? clases.length : 0;
+            } catch (error) {
+                console.error('Error cargando modalidades:', error);
+                document.getElementById('modalidadesActivas').innerText = '0';
+            }
+        }
+
+        // Lógica del Escáner QR
+        let html5QrcodeScanner = null;
+        function toggleScanner() {
+            const container = document.getElementById('qr-reader-container');
+            const btn = document.getElementById('btnScanner');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                btn.textContent = 'Cerrar Escáner';
+                btn.style.background = '#ef4444';
+                
+                html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+                html5QrcodeScanner.render((decodedText) => {
+                    // El QR del alumno será su número de teléfono
+                    document.getElementById('personaTelefono').value = decodedText;
+                    html5QrcodeScanner.clear();
+                    toggleScanner();
+                    registrarAsistencia();
+                });
+            } else {
+                container.style.display = 'none';
+                btn.textContent = 'Abrir Escáner QR';
+                btn.style.background = '#25D366';
+                if (html5QrcodeScanner) {
+                    html5QrcodeScanner.clear();
+                    html5QrcodeScanner = null;
+                }
+            }
+        }
+
+        async function registrarAsistencia() {
+            const telefono = document.getElementById('personaTelefono').value.trim();
+            const fecha = document.getElementById('asistenciaFecha').value;
+            const asistio = document.getElementById('asistioSelect').value === 'true';
+            const nota = document.getElementById('asistenciaNota').value.trim();
+            const messageEl = document.getElementById('asistenciaMessage');
+            const telefonoValido = /^[0-9]{10}$/.test(telefono);
+
+            messageEl.textContent = '';
+            if (!telefono) {
+                messageEl.textContent = 'Ingresa el teléfono del alumno.';
+                return;
+            }
+            if (!telefonoValido) {
+                messageEl.textContent = 'Ingresa un teléfono válido de 10 dígitos.';
+                return;
+            }
+
+            try {
+                const respuestaAlumno = await apiFetch(`${alumnoConsultaUrl}?telefono=${encodeURIComponent(telefono)}`);
+                if (respuestaAlumno.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                if (!respuestaAlumno.ok) {
+                    messageEl.textContent = 'Alumno no encontrado. Verifica el teléfono.';
+                    return;
+                }
+
+                const alumnoData = await respuestaAlumno.json();
+                const asistenciaBody = {
+                    alumnoId: alumnoData.id || null,
+                    fecha: fecha ? `${fecha}T00:00:00Z` : new Date().toISOString(),
+                    asistio,
+                    nota
+                };
+
+                const respuestaAsistencia = await apiFetch(asistenciasApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(asistenciaBody)
+                });
+
+                if (respuestaAsistencia.status === 401) {
+                    // No autenticado como admin: redirigir al login
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+
+                if (!respuestaAsistencia.ok) {
+                    const texto = await respuestaAsistencia.text();
+                    messageEl.textContent = `Error guardando asistencia: ${texto}`;
+                    return;
+                }
+
+                messageEl.textContent = 'Asistencia registrada correctamente.';
+                document.getElementById('asistenciaNota').value = '';
+                await cargarAsistencias();
+            } catch (error) {
+                console.error('Error registrando asistencia:', error);
+                messageEl.textContent = 'Error guardando asistencia. Revisa la consola.';
+            }
+        }
+
+        async function cargarAlumnos() {
+            try {
+                const respuesta = await apiFetch(`${alumnosApiUrl}?cb=${new Date().getTime()}`);
+                if (respuesta.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                const alumnos = await respuesta.json();
+                listaAlumnosLocal = alumnos; // Guardamos para editar después
+                const tbody = document.getElementById('tablaAlumnosGestionBody');
+                tbody.innerHTML = '';
+
+                alumnos.forEach(alumno => {
+                    let estadoHtml = '';
+                    let estadoClave = '';
+                    if (!alumno.activo) {
+                        estadoClave = 'inactivo';
+                        estadoHtml = '<span style="color:#ef4444; font-weight:bold;">Inactivo</span>';
+                    } else if (!alumno.ultimoPagoPagado) {
+                        estadoClave = 'pendiente';
+                        estadoHtml = '<span style="color:#f59e0b; font-weight:bold;">Pendiente</span>';
+                    } else {
+                        estadoClave = 'activo';
+                        estadoHtml = '<span style="color:#10b981; font-weight:bold;">Activo</span>';
+                    }
+
+                    const fila = document.createElement('tr');
+                    const iniciales = String(alumno.nombreCompleto || '?').trim().split(/\s+/).slice(0, 2).map(parte => parte[0]).join('').toUpperCase();
+                    fila.dataset.nombre = String(alumno.nombreCompleto || '').toLowerCase();
+                    fila.dataset.telefono = String(alumno.telefono || '').toLowerCase();
+                    fila.dataset.modalidad = String(alumno.modalidadElegida || '').toLowerCase();
+                    fila.dataset.estado = estadoClave;
+                    fila.innerHTML = `
+                        <td><div class="student-name"><span class="student-avatar">${iniciales}</span><span>${alumno.nombreCompleto}</span></div></td>
+                        <td>${alumno.telefono}</td>
+                        <td>${alumno.modalidadElegida}</td>
+                        <td>${estadoHtml}</td>
+                        <td>
+                            <div style="display:flex; gap:5px; flex-wrap: wrap;">
+                                <button class="btn-whatsapp" style="background:#d4af37; color:#000;" onclick="enviarBienvenida('${alumno.nombreCompleto}', '${alumno.telefono}', '${alumno.modalidadElegida}')">👋 Bienvenida</button>
+                                <button class="btn-pay" style="background:#3b82f6;" onclick="abrirEditarAlumno(${alumno.id})">✏️ Editar</button>
+                                <button class="btn-pay" style="background:#ef4444;" onclick="eliminarAlumno(${alumno.id})">🗑️ Eliminar</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+                actualizarFiltroModalidadesAlumnos();
+                filtrarDirectorioAlumnos();
+            } catch (error) {
+                console.error('Error cargando alumnos:', error);
+            }
+        }
+
+        function actualizarFiltroModalidadesAlumnos() {
+            const select = document.getElementById('filtroModalidadAlumno');
+            if (!select) return;
+            const seleccion = select.value;
+            const modalidades = [...new Set(listaAlumnosLocal
+                .map(a => String(a.modalidadElegida || '').trim()).filter(Boolean))]
+                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+            select.innerHTML = '<option value="">Todas las modalidades</option>';
+            modalidades.forEach(modalidad => {
+                const option = document.createElement('option');
+                option.value = modalidad.toLowerCase();
+                option.textContent = modalidad;
+                select.appendChild(option);
+            });
+            select.value = seleccion;
+        }
+
+        function filtrarDirectorioAlumnos() {
+            const busqueda = String(document.getElementById('buscarAlumno')?.value || '').trim().toLowerCase();
+            const modalidad = String(document.getElementById('filtroModalidadAlumno')?.value || '').toLowerCase();
+            const estado = document.getElementById('filtroEstadoAlumno')?.value || '';
+            document.querySelectorAll('#tablaAlumnosGestionBody tr').forEach(fila => {
+                const coincideTexto = !busqueda || `${fila.dataset.nombre} ${fila.dataset.telefono} ${fila.dataset.modalidad}`.includes(busqueda);
+                const coincideModalidad = !modalidad || fila.dataset.modalidad === modalidad;
+                const coincideEstado = !estado || fila.dataset.estado === estado;
+                fila.hidden = !(coincideTexto && coincideModalidad && coincideEstado);
+            });
+        }
+
+        async function cargarClasesAdmin() {
+            try {
+                const respuesta = await apiFetch('/api/Clases');
+                const clases = await respuesta.json();
+                listaClasesLocal = clases; // Guardamos para el selector de edición
+                const tbody = document.getElementById('tablaClasesBody');
+                const tbodyNinos = document.getElementById('tablaClasesNinosBody');
+                tbody.innerHTML = '';
+                tbodyNinos.innerHTML = '';
+
+                clases.forEach(clase => {
+                    const nivel = String(clase.nivel ?? clase.Nivel ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                    const destino = nivel === 'ninos' ? tbodyNinos : tbody;
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${clase.horario}</td>
+                        <td>${clase.descripcion || 'Sin descripción'}</td>
+                        <td>$${clase.costo}</td>
+                        <td>${clase.cupoMaximo}</td>
+                        <td>
+                            <button class="btn-pay" style="background:var(--water-blue);" onclick="abrirEditarClase(${clase.id ?? clase.Id})">Editar</button>
+                        </td>
+                    `;
+                    destino.appendChild(fila);
+                });
+
+                if (!tbody.children.length) tbody.innerHTML = '<tr><td colspan="5">No hay modalidades generales registradas.</td></tr>';
+                if (!tbodyNinos.children.length) tbodyNinos.innerHTML = '<tr><td colspan="5">No hay clases para niños registradas.</td></tr>';
+            } catch (e) { console.error(e); }
+        }
+
+
+        async function abrirEditarAlumno(id) {
+            const alumno = listaAlumnosLocal.find(a => a.id === id);
+            if (!alumno) return;
+
+            const claseSelect = document.getElementById('editAlumnoClaseId');
+            claseSelect.innerHTML = '';
+            if (listaClasesLocal.length === 0) {
+                await cargarClasesAdmin();
+            }
+
+            listaClasesLocal.forEach(clase => {
+                const claseId = clase.id ?? clase.Id;
+                const horario = clase.horario ?? clase.Horario ?? `Clase ${claseId}`;
+                const option = document.createElement('option');
+                option.value = claseId;
+                option.textContent = horario;
+                claseSelect.appendChild(option);
+            });
+
+            document.getElementById('editAlumnoId').value = alumno.id;
+            document.getElementById('editAlumnoNombre').value = alumno.nombreCompleto || '';
+            document.getElementById('editAlumnoTelefono').value = alumno.telefono || '';
+            document.getElementById('editAlumnoActivo').value = alumno.activo ? 'true' : 'false';
+            document.getElementById('editAlumnoNota').value = alumno.nota || '';
+            if (alumno.claseId) {
+                claseSelect.value = alumno.claseId;
+            }
+
+            document.getElementById('modalEditarAlumno').classList.add('show');
+        }
+
+        function cerrarModalAlumno() {
+            document.getElementById('modalEditarAlumno').classList.remove('show');
+        }
+
+        async function guardarAlumno() {
+            const id = document.getElementById('editAlumnoId').value;
+            const datos = {
+                id: Number(id),
+                nombreCompleto: document.getElementById('editAlumnoNombre').value.trim(),
+                telefono: document.getElementById('editAlumnoTelefono').value.trim(),
+                claseId: Number(document.getElementById('editAlumnoClaseId').value),
+                activo: document.getElementById('editAlumnoActivo').value === 'true',
+                nota: document.getElementById('editAlumnoNota').value.trim()
+            };
+
+            if (!datos.nombreCompleto || !datos.telefono) {
+                Swal.fire('Error', 'El nombre y teléfono son obligatorios.', 'error');
+                return;
+            }
+
+            Swal.fire({ title: 'Guardando alumno...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            try {
+                const res = await apiFetch(`${alumnosApiUrl}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                if (res.ok) {
+                    cerrarModalAlumno();
+                    await cargarAlumnos();
+                    await cargarPagos();
+                    Swal.fire('Actualizado', 'Datos del alumno guardados correctamente.', 'success');
+                } else {
+                    const msg = await res.text();
+                    Swal.fire('Error', msg || 'No se pudo actualizar el alumno.', 'error');
+                }
+            } catch (error) {
+                console.error('Error guardando alumno:', error);
+                Swal.fire('Error', 'Error de conexión.', 'error');
+            }
+        }
+
+        // Funciones para Editar Clase
+        function esNivelNinos(nivel) {
+            return String(nivel || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === 'ninos';
+        }
+
+        function obtenerChecksHorariosNinos() {
+            return Array.from(document.querySelectorAll('input[name="horarioNinos"]'));
+        }
+
+        function quitarHorariosDeDescripcion(descripcion) {
+            return String(descripcion || '').replace(/^🕒 Horarios:.*(?:\r?\n|$)/m, '').trim();
+        }
+
+        function configurarHorariosNinos(descripcion = '', seleccionarTodosSiVacio = false) {
+            const linea = String(descripcion || '').match(/^🕒 Horarios:\s*(.*)$/m);
+            const horariosGuardados = linea ? linea[1].split('|').map(valor => valor.trim()) : [];
+            obtenerChecksHorariosNinos().forEach(check => {
+                check.checked = horariosGuardados.length
+                    ? horariosGuardados.includes(check.value)
+                    : seleccionarTodosSiVacio;
+            });
+        }
+
+        function actualizarVisibilidadHorariosNinos() {
+            const nivel = document.getElementById('editClaseNivel').value;
+            document.getElementById('grupoHorariosNinos').style.display = esNivelNinos(nivel) ? 'block' : 'none';
+        }
+
+        function abrirNuevaClase(nivel = 'Principiante') {
+            document.getElementById('modalClaseTitulo').textContent = 'Agregar Modalidad / Clase';
+            document.getElementById('editClaseId').value = '';
+            document.getElementById('editClaseHorario').value = '';
+            document.getElementById('editClaseCosto').value = '';
+            document.getElementById('editClaseCupo').value = '';
+            document.getElementById('editClaseNivel').value = nivel;
+            document.getElementById('editClaseDescripcion').value = '';
+            configurarHorariosNinos('', esNivelNinos(nivel));
+            actualizarVisibilidadHorariosNinos();
+            document.getElementById('modalEditarClase').classList.add('show');
+            document.getElementById('editClaseHorario').focus();
+        }
+
+        function abrirEditarClase(id) {
+            const clase = listaClasesLocal.find(c => (c.id || c.Id) == id);
+            if (!clase) return;
+
+            document.getElementById('modalClaseTitulo').textContent = 'Editar Modalidad / Clase';
+            document.getElementById('editClaseId').value = clase.id || clase.Id;
+            document.getElementById('editClaseHorario').value = clase.horario || clase.Horario;
+            document.getElementById('editClaseCosto').value = clase.costo || clase.Costo;
+            document.getElementById('editClaseCupo').value = clase.cupoMaximo || clase.CupoMaximo;
+            document.getElementById('editClaseNivel').value = clase.nivel || clase.Nivel;
+            const descripcion = clase.descripcion || clase.Descripcion || '';
+            document.getElementById('editClaseDescripcion').value = quitarHorariosDeDescripcion(descripcion);
+            configurarHorariosNinos(descripcion, esNivelNinos(clase.nivel || clase.Nivel));
+            actualizarVisibilidadHorariosNinos();
+
+            document.getElementById('modalEditarClase').classList.add('show');
+        }
+
+        function cerrarModalClase() {
+            document.getElementById('modalEditarClase').classList.remove('show');
+        }
+
+        async function guardarClase() {
+            const id = document.getElementById('editClaseId').value;
+            const horario = document.getElementById('editClaseHorario').value.trim();
+            const nivel = document.getElementById('editClaseNivel').value;
+            const horariosNinos = obtenerChecksHorariosNinos().filter(check => check.checked).map(check => check.value);
+            let descripcion = quitarHorariosDeDescripcion(document.getElementById('editClaseDescripcion').value);
+            if (esNivelNinos(nivel)) {
+                if (!horariosNinos.length) {
+                    Swal.fire('Selecciona un horario', 'Elige al menos un horario disponible para la clase de niños.', 'warning');
+                    return;
+                }
+                descripcion = `🕒 Horarios: ${horariosNinos.join(' | ')}${descripcion ? `\n${descripcion}` : ''}`;
+            }
+            const datos = {
+                Id: id ? parseInt(id) : 0,
+                Horario: horario,
+                Costo: parseFloat(document.getElementById('editClaseCosto').value),
+                CupoMaximo: parseInt(document.getElementById('editClaseCupo').value),
+                Nivel: nivel,
+                Descripcion: descripcion
+            };
+
+            if (!datos.Horario || !Number.isFinite(datos.Costo) || datos.Costo < 0
+                || !Number.isInteger(datos.CupoMaximo) || datos.CupoMaximo < 1) {
+                Swal.fire('Datos incompletos', 'Escribe un nombre, un costo válido y un cupo mayor a cero.', 'warning');
+                return;
+            }
+
+            const nombreNormalizado = datos.Horario.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .trim().replace(/\s+/g, ' ').toLowerCase();
+            const repetida = listaClasesLocal.some(clase => {
+                const claseId = clase.id ?? clase.Id;
+                const nombre = String(clase.horario ?? clase.Horario ?? '')
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .trim().replace(/\s+/g, ' ').toLowerCase();
+                return nombre === nombreNormalizado && String(claseId) !== String(id);
+            });
+            if (repetida) {
+                Swal.fire('Nombre repetido', 'Ya existe una modalidad con ese nombre.', 'warning');
+                return;
+            }
+
+            Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            try {
+                const res = await apiFetch(id ? `/api/Clases/${id}` : '/api/Clases', {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                if (res.ok) {
+                    cerrarModalClase();
+                    await cargarClasesAdmin();
+                    await cargarModalidades();
+                    await cargarPagos();
+                    Swal.fire(id ? 'Actualizado' : 'Agregado', id ? 'Modalidad actualizada con éxito.' : 'Modalidad agregada con éxito.', 'success');
+                } else {
+                    const err = await res.text();
+                    Swal.fire('Error', err, 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error de conexión.');
+            }
+        }
+
+        // Funciones para Editar Pago
+        function abrirEditarPago(id, fechaVencimiento) {
+            document.getElementById('editPagoId').value = id;
+            document.getElementById('editPagoFechaVencimiento').value = fechaVencimiento;
+            document.getElementById('modalEditarPago').classList.add('show');
+        }
+
+        function cerrarModalPago() {
+            document.getElementById('modalEditarPago').classList.remove('show');
+        }
+
+        async function guardarPago() {
+            const id = document.getElementById('editPagoId').value;
+            const fechaVencimiento = document.getElementById('editPagoFechaVencimiento').value;
+
+            if (!fechaVencimiento) {
+                Swal.fire('Error', 'Por favor selecciona una fecha de vencimiento.', 'error');
+                return;
+            }
+
+            Swal.fire({ title: 'Guardando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            try {
+                const res = await apiFetch(`${pagosApiUrl}/${id}/actualizar-vencimiento`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fechaVencimiento: fechaVencimiento })
+                });
+
+                if (res.ok) {
+                    cerrarModalPago();
+                    await cargarPagos();
+                    Swal.fire('Actualizado', 'Fecha de vencimiento actualizada correctamente.', 'success');
+                } else {
+                    const err = await res.text();
+                    Swal.fire('Error', err, 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'Error de conexión.', 'error');
+            }
+        }
+
+
+        // WhatsApp: Mensaje de Bienvenida
+        function enviarBienvenida(nombre, telefono, modalidad) {
+            const portalUrl = window.location.origin + "/alumno.html";
+            const mensaje = `¡Hola *${nombre}*! 👋 Bienvenido(a) a *Jaguares Swim* 🐆. \n\nEstamos muy felices de tenerte con nosotros entrenando en la modalidad de *${modalidad}*. \n\nYa puedes acceder a tu portal de alumno para consultar tus pagos y asistencias aquí: \n🔗 ${portalUrl} \n\n¡Nos vemos en la alberca! 🏊‍♂️`;
+            window.open(`https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        // WhatsApp: Recordatorio de Pago
+        function enviarRecordatorioPago(nombre, telefono, monto) {
+            const portalUrl = window.location.origin + "/alumno.html";
+            const mensaje = `Hola *${nombre}*, te saludamos de *Jaguares Swim* 🐆. Te recordamos que tu mensualidad de *$${monto} MXN* está pendiente. \n\nPuedes subir tu comprobante de pago entrando a tu portal: \n🔗 ${portalUrl} \n\n¡Gracias!`;
+            window.open(`https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        // WhatsApp: Confirmación de Asistencia
+        function enviarAvisoAsistencia(nombre, telefono, fecha, asistio) {
+            const status = asistio ? "se ha registrado correctamente ✅" : "no se registró (falta) ❌";
+            const mensaje = `Hola *${nombre}*, te informamos que tu asistencia del día *${fecha}* ${status} en *Jaguares Swim* 🐆. \n\n¡Sigue entrenando duro!`;
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        async function eliminarAlumno(id) {
+            const result = await Swal.fire({
+                title: '¿Eliminar alumno?',
+                text: "Se borrarán sus datos permanentemente. Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const respuesta = await apiFetch(`${alumnosApiUrl}/${id}`, { method: 'DELETE' });
+                if (respuesta.ok) {
+                    Swal.fire('¡Borrado!', 'El alumno ha sido eliminado del sistema.', 'success');
+                    await cargarAlumnos();
+                    await cargarPagos();
+                } else {
+                    const msg = await respuesta.text();
+                    Swal.fire('Error', msg || 'No se pudo eliminar.', 'error');
+                }
+            } catch (error) {
+                console.error('Error eliminando alumno:', error);
+                Swal.fire('Error', 'Error de conexión con el servidor.', 'error');
+            }
+        }
+
+        const galeriaStorageKey = 'jaguares_galeria_v1';
+
+        function cargarGaleriaLocal() {
+            try { return JSON.parse(localStorage.getItem(galeriaStorageKey) || '[]'); }
+            catch { return []; }
+        }
+
+        function renderizarGaleriaAdmin() {
+            const fotos = cargarGaleriaLocal();
+            const grid = document.getElementById('galeriaAdminGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            if (!fotos.length) {
+                grid.innerHTML = '<p style="color:var(--text-muted);">Aún no hay fotografías personalizadas. La página principal seguirá mostrando la galería predeterminada.</p>';
+                return;
+            }
+            fotos.forEach(foto => {
+                const item = document.createElement('div');
+                item.className = 'gallery-admin-item';
+                item.style.backgroundImage = `url(${foto.imagen})`;
+                const titulo = document.createElement('span'); titulo.textContent = foto.titulo;
+                const borrar = document.createElement('button'); borrar.type = 'button'; borrar.textContent = 'Eliminar';
+                borrar.addEventListener('click', () => eliminarFotoGaleria(foto.id));
+                item.append(titulo, borrar); grid.appendChild(item);
+            });
+        }
+
+        function redimensionarImagenGaleria(archivo) {
+            return new Promise((resolve, reject) => {
+                const imagen = new Image();
+                imagen.onload = () => {
+                    const escala = Math.min(1, 1280 / imagen.width, 800 / imagen.height);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.round(imagen.width * escala); canvas.height = Math.round(imagen.height * escala);
+                    canvas.getContext('2d').drawImage(imagen, 0, 0, canvas.width, canvas.height);
+                    URL.revokeObjectURL(imagen.src);
+                    resolve(canvas.toDataURL('image/jpeg', .8));
+                };
+                imagen.onerror = reject;
+                imagen.src = URL.createObjectURL(archivo);
+            });
+        }
+
+        async function agregarFotoGaleria() {
+            const titulo = document.getElementById('galeriaTitulo').value.trim();
+            const input = document.getElementById('galeriaArchivo');
+            const mensaje = document.getElementById('galeriaMensaje');
+            const archivo = input.files?.[0];
+            if (!titulo || !archivo) { mensaje.textContent = 'Escribe un título y selecciona una fotografía.'; return; }
+            if (!archivo.type.startsWith('image/')) { mensaje.textContent = 'Selecciona un archivo de imagen válido.'; return; }
+            mensaje.textContent = 'Procesando fotografía...';
+            try {
+                const fotos = cargarGaleriaLocal();
+                if (fotos.length >= 6) { mensaje.textContent = 'Puedes publicar un máximo de 6 fotografías.'; return; }
+                fotos.push({ id:Date.now(), titulo, imagen:await redimensionarImagenGaleria(archivo) });
+                localStorage.setItem(galeriaStorageKey, JSON.stringify(fotos));
+                document.getElementById('galeriaTitulo').value = ''; input.value = '';
+                mensaje.textContent = 'Fotografía agregada. Ya puede verse en la página principal de este navegador.';
+                renderizarGaleriaAdmin();
+            } catch (error) {
+                console.error(error); mensaje.textContent = 'No se pudo guardar. El almacenamiento del navegador puede estar lleno.';
+            }
+        }
+
+        function eliminarFotoGaleria(id) {
+            const fotos = cargarGaleriaLocal().filter(foto => foto.id !== id);
+            localStorage.setItem(galeriaStorageKey, JSON.stringify(fotos));
+            renderizarGaleriaAdmin();
+        }
+
+        const recibosStorageKey = 'jaguares_recibos_pago_v1';
+
+        function cargarRecibosLocales() {
+            try { return JSON.parse(localStorage.getItem(recibosStorageKey) || '[]'); }
+            catch { return []; }
+        }
+
+        function guardarRecibosLocales(recibos) {
+            localStorage.setItem(recibosStorageKey, JSON.stringify(recibos));
+        }
+
+        function limpiarNombreModalidad(valor) {
+            let texto = String(valor || 'Sin modalidad').replace(/&/g, '');
+            const inicioModalidad = texto.toLocaleLowerCase('es').indexOf('modalidad');
+            if (inicioModalidad >= 0) texto = texto.slice(inicioModalidad);
+            return texto.replace(/^[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]+/, '').replace(/\s+/g, ' ').trim() || 'Sin modalidad';
+        }
+
+        function crearReciboDesdePago(pago, metodoPago) {
+            const fechaPago = new Date();
+            const fechaVencimiento = pago.fechaVencimiento ? new Date(pago.fechaVencimiento) : fechaPago;
+            const proximoPago = new Date(fechaVencimiento);
+            proximoPago.setMonth(proximoPago.getMonth() + 1);
+            const consecutivo = String(Date.now()).slice(-6);
+            return {
+                folio: `JS-${fechaPago.getFullYear()}-${consecutivo}`,
+                pagoId: pago.id,
+                nombreCompleto: pago.nombreCompleto || 'Alumno',
+                telefono: pago.telefono || '',
+                modalidad: limpiarNombreModalidad(pago.modalidad),
+                monto: Number(pago.monto || 0),
+                periodo: fechaVencimiento.toLocaleDateString('es-MX', { month:'long', year:'numeric' }),
+                fechaPago: fechaPago.toISOString(),
+                proximoPago: proximoPago.toISOString(),
+                metodoPago,
+                estatus: 'Pagado',
+                telefonoMaestro: '9996404677'
+            };
+        }
+
+        function registrarReciboLocal(recibo) {
+            const recibos = cargarRecibosLocales().filter(item => item.pagoId !== recibo.pagoId);
+            recibos.unshift(recibo);
+            guardarRecibosLocales(recibos);
+            renderizarRecibos();
+        }
+
+        function renderizarRecibos() {
+            const recibos = cargarRecibosLocales();
+            const tbody = document.getElementById('tablaRecibosBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            document.getElementById('totalRecibos').textContent = recibos.length;
+            document.getElementById('totalRecibosEfectivo').textContent = recibos.filter(r => r.metodoPago === 'Efectivo').length;
+            document.getElementById('totalRecibosTransferencia').textContent = recibos.filter(r => r.metodoPago === 'Transferencia').length;
+            if (!recibos.length) {
+                tbody.innerHTML = '<tr><td colspan="7">Todavía no se han generado recibos desde este navegador.</td></tr>';
+                return;
+            }
+            recibos.forEach(recibo => {
+                recibo.modalidad = limpiarNombreModalidad(recibo.modalidad);
+                const fila = document.createElement('tr');
+                [recibo.folio, recibo.nombreCompleto, recibo.modalidad, `$${recibo.monto.toLocaleString('es-MX')}`, new Date(recibo.fechaPago).toLocaleString('es-MX'), recibo.metodoPago]
+                    .forEach(valor => { const td = document.createElement('td'); td.textContent = valor; fila.appendChild(td); });
+                const acciones = document.createElement('td');
+                agregarBotonAccion(acciones, 'Descargar', 'btn-pay', () => descargarRecibo(recibo));
+                agregarBotonAccion(acciones, 'WhatsApp', 'btn-whatsapp', () => compartirReciboWhatsApp(recibo));
+                fila.appendChild(acciones);
+                tbody.appendChild(fila);
+            });
+        }
+
+        async function obtenerLogoReciboDataUrl() {
+            const respuesta = await fetch('recibo-logo.png');
+            const blob = await respuesta.blob();
+            return await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        async function crearPdfRecibo(recibo) {
+            recibo.modalidad = limpiarNombreModalidad(recibo.modalidad);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit:'mm', format:'a5', orientation:'portrait' });
+            doc.setFillColor(12, 10, 17); doc.rect(0, 0, 148, 210, 'F');
+            doc.setFillColor(139, 92, 246); doc.rect(0, 0, 148, 4, 'F');
+            try { doc.addImage(await obtenerLogoReciboDataUrl(), 'PNG', 12, 10, 33, 33); } catch (error) { console.warn('No se pudo cargar el logo del recibo', error); }
+            doc.setTextColor(212, 175, 55); doc.setFontSize(18); doc.setFont('helvetica', 'bold'); doc.text('JAGUARES SWIM', 50, 20);
+            doc.setTextColor(235, 232, 240); doc.setFontSize(12); doc.text('RECIBO DE PAGO', 50, 29);
+            doc.setFontSize(9); doc.setTextColor(170, 165, 178); doc.text(`Folio: ${recibo.folio}`, 50, 36);
+            doc.setDrawColor(70, 62, 80); doc.line(12, 49, 136, 49);
+            const filas = [
+                ['Alumno', recibo.nombreCompleto], ['Teléfono', recibo.telefono || 'No registrado'],
+                ['Modalidad / curso', recibo.modalidad], ['Periodo pagado', recibo.periodo],
+                ['Fecha de pago', new Date(recibo.fechaPago).toLocaleString('es-MX')],
+                ['Próximo pago', new Date(recibo.proximoPago).toLocaleDateString('es-MX')],
+                ['Método de pago', recibo.metodoPago], ['Monto', `$${recibo.monto.toLocaleString('es-MX')} MXN`],
+                ['Estatus', recibo.estatus]
+            ];
+            let y = 59;
+            filas.forEach(([etiqueta, valor]) => {
+                doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(212, 175, 55); doc.text(etiqueta.toUpperCase(), 14, y);
+                doc.setFont('helvetica', 'normal'); doc.setTextColor(244, 241, 247); doc.text(String(valor), 55, y, { maxWidth:78 });
+                y += 12;
+            });
+            doc.setFillColor(32, 24, 45); doc.roundedRect(12, 171, 124, 20, 3, 3, 'F');
+            doc.setTextColor(212, 175, 55); doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.text('PAGO APROBADO', 74, 179, { align:'center' });
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(220, 216, 225); doc.setFontSize(8); doc.text(`Contacto del maestro: ${recibo.telefonoMaestro}`, 74, 186, { align:'center' });
+            doc.setTextColor(130, 126, 139); doc.text('Gracias por formar parte de Jaguares Swim.', 74, 201, { align:'center' });
+            return doc;
+        }
+
+        async function descargarRecibo(recibo) {
+            const doc = await crearPdfRecibo(recibo);
+            doc.save(`recibo_${recibo.folio}.pdf`);
+        }
+
+        async function compartirReciboWhatsApp(recibo) {
+            const doc = await crearPdfRecibo(recibo);
+            const archivo = new File([doc.output('blob')], `recibo_${recibo.folio}.pdf`, { type:'application/pdf' });
+            const mensaje = `Hola ${recibo.nombreCompleto}, tu pago de $${recibo.monto.toLocaleString('es-MX')} MXN por ${recibo.modalidad} ha sido aprobado. Te compartimos tu recibo. Próximo pago: ${new Date(recibo.proximoPago).toLocaleDateString('es-MX')}.`;
+            if (navigator.share && navigator.canShare?.({ files:[archivo] })) {
+                await navigator.share({ title:'Recibo Jaguares Swim', text:mensaje, files:[archivo] });
+                return;
+            }
+            doc.save(archivo.name);
+            const telefono = String(recibo.telefono || '').replace(/\D/g, '');
+            const destino = telefono.length === 10 ? `52${telefono}` : telefono;
+            window.open(`https://wa.me/${destino}?text=${encodeURIComponent(`${mensaje}\n\nEl recibo se descargó en tu equipo; adjúntalo en este chat.`)}`, '_blank');
+        }
+
+        async function marcarPagado(id) {
+            const pago = listaPagosUnicos.find(item => Number(item.id) === Number(id));
+            if (!pago) {
+                Swal.fire('Error', 'No se encontró la información del pago.', 'error');
+                return;
+            }
+            const result = await Swal.fire({
+                title: 'Aprobar pago',
+                text: 'Selecciona el método utilizado para generar el recibo.',
+                input: 'radio',
+                inputOptions: { Efectivo:'Pagado en efectivo', Transferencia:'Pagado por transferencia' },
+                inputValidator: valor => !valor ? 'Selecciona un método de pago.' : undefined,
+                icon: 'question', showCancelButton: true,
+                confirmButtonColor: '#d4af37', confirmButtonText: 'Aprobar y crear recibo', cancelButtonText:'Cancelar'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const respuesta = await apiFetch(`${pagosApiUrl}/${id}/marcar-pagado`, { method: 'PUT' });
+                if (respuesta.ok) {
+                    const recibo = crearReciboDesdePago(pago, result.value);
+                    registrarReciboLocal(recibo);
+                    await cargarPagos();
+                    await cargarAlumnos();
+                    const listo = await Swal.fire({ title:'¡Pago aprobado!', text:'El recibo fue creado correctamente.', icon:'success', showCancelButton:true, showDenyButton:true, confirmButtonText:'Enviar por WhatsApp', denyButtonText:'Descargar PDF', cancelButtonText:'Cerrar', confirmButtonColor:'#25D366', denyButtonColor:'#8b5cf6' });
+                    if (listo.isConfirmed) await compartirReciboWhatsApp(recibo);
+                    else if (listo.isDenied) await descargarRecibo(recibo);
+                } else {
+                    const error = await respuesta.text();
+                    Swal.fire('No se pudo aprobar', error || 'El servidor rechazó el cambio de estatus.', 'error');
+                }
+            } catch (error) {
+                console.error('Error marcando pago:', error);
+                Swal.fire('Error', 'No se pudo conectar con el servidor. No se generó ningún recibo.', 'error');
+            }
+        }
+
+        async function eliminarAsistencia(id) {
+            const result = await Swal.fire({
+                title: '¿Borrar asistencia?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Sí, borrar'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const respuesta = await apiFetch(`${asistenciasApiUrl}/${id}`, { method: 'DELETE' });
+                if (respuesta.status === 401) {
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                
+                if (respuesta.ok) {
+                    Swal.fire('Eliminado', 'Registro borrado.', 'success');
+                    await cargarAsistencias();
+                } else {
+                    const msg = await respuesta.text();
+                    Swal.fire('Error', msg, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function cerrarSesion() {
+            try {
+                await apiFetch('/api/Admin/logout', { method: 'POST' });
+            } catch (error) {
+                console.error('Error cerrando sesión:', error);
+            }
+            JaguaresApi.clearToken();
+            window.location.href = '/admin-login.html';
+        }
+
+        const enlacesNavegacion = Array.from(document.querySelectorAll('.admin-nav a'));
+        function mostrarVistaAdmin(vista, actualizarHash = true) {
+            const vistaValida = ['dashboard', 'alumnos', 'planificacion', 'informacion', 'recibos'].includes(vista) ? vista : 'dashboard';
+            document.querySelectorAll('[data-view-panel]').forEach(panel => {
+                panel.classList.toggle('active', panel.dataset.viewPanel === vistaValida);
+            });
+            enlacesNavegacion.forEach(item => item.classList.remove('active'));
+            const enlaceActivo = enlacesNavegacion.find(item => item.dataset.view === vistaValida);
+            if (enlaceActivo) enlaceActivo.classList.add('active');
+            if (actualizarHash) history.replaceState(null, '', `#${vistaValida}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        enlacesNavegacion.forEach(enlace => enlace.addEventListener('click', evento => {
+            evento.preventDefault();
+            mostrarVistaAdmin(enlace.dataset.view);
+        }));
+        mostrarVistaAdmin(location.hash.replace('#', ''), false);
+
+        cargarPagos();
+        cargarAsistencias();
+        cargarAlumnos();
+        cargarModalidades();
+        cargarClasesAdmin();
+        renderizarRecibos();
+        renderizarGaleriaAdmin();
+    </script>
+</body>
+</html>

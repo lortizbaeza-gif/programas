@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CINE+</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public-site">
+    <header>
+        <nav class="navbar navbar-expand-lg cinema-nav">
+            <div class="container-fluid px-lg-4">
+                <a class="navbar-brand brand-mark" asp-controller="Home" asp-action="Index"><span class="brand-icon">▶</span><span>CINE<span class="brand-accent">+</span></span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto gap-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Películas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Dulceria" asp-action="Index">Alimentos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Club" asp-action="MiClub">Club CINE+</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">Especiales</a>
+                        </li>
+                    </ul>
+                    <div class="nav-actions">
+                        <a class="nav-icon-btn" asp-controller="Dulceria" asp-action="Carrito" aria-label="Ver carrito">🛒</a>
+                        <a class="nav-icon-btn" asp-controller="Admin" asp-action="Index" aria-label="Panel administrativo">👤</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="cinema-footer text-center py-4">
+        <div class="container">
+            <span>&copy; 2026 Cine Premium. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

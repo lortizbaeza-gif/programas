@@ -1,0 +1,7 @@
+evidencias/
+*.pdf
+*.rar
+*.zip
+node_modules/
+.sites/
+.DS_Store

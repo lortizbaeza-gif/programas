@@ -1,0 +1,2 @@
+# Python 3.10+ y biblioteca estándar. No se necesitan paquetes de pip.
+# El juego usa tkinter, incluido en la instalación habitual de Python en Windows.

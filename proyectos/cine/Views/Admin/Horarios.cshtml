@@ -1,0 +1,45 @@
+@model IEnumerable<Cine.Models.Horario>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Horarios";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Programación de Horarios</h2>
+        <a asp-action="CrearHorario" class="btn btn-danger">Nuevo horario</a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Película</th>
+                        <th>Sala</th>
+                        <th>Formato</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Termina</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var horario in Model)
+                    {
+                        <tr>
+                            <td>@horario.Pelicula?.Titulo</td>
+                            <td>Sala @horario.Sala?.Letra — @horario.Sala?.Nombre <span class="badge bg-secondary">@horario.Sala?.Tipo</span></td>
+                            <td><span class="badge bg-dark">@horario.FormatoFuncion</span></td>
+                            <td>@horario.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@horario.Hora</td>
+                            <td class="fw-semibold">@horario.Fecha.Date.Add(horario.Hora).AddMinutes(horario.Pelicula?.Duracion ?? 0).ToString("HH:mm")</td>
+                            <td class="text-end"><form asp-action="EliminarHorario" asp-route-id="@horario.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar esta función?')">Eliminar</button></form></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

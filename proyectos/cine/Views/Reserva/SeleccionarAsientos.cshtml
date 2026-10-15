@@ -1,0 +1,126 @@
+@model IEnumerable<Cine.Models.Asiento>
+
+@{
+    ViewData["Title"] = "Seleccionar asientos";
+    var horario = ViewBag.Horario as Cine.Models.Horario;
+    var sala = horario?.Sala;
+    var esVip = string.Equals(sala?.Tipo, "VIP", StringComparison.OrdinalIgnoreCase);
+    var es4D = string.Equals(horario?.FormatoFuncion, "4D", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(sala?.Formato, "4D", StringComparison.OrdinalIgnoreCase);
+    var tipoDistribucion = esVip ? "VIP · dos bloques"
+        : es4D ? "4D · asientos en parejas"
+        : "Tradicional · tres bloques";
+    var columnas = sala?.Columnas ?? 10;
+
+    bool HayPasilloDespues(int numero)
+    {
+        if (numero >= columnas) return false;
+        if (esVip) return numero == (sala?.PasilloDespuesColumna > 0 ? sala.PasilloDespuesColumna : columnas / 2);
+        if (es4D) return numero % 2 == 0;
+
+        var primerPasillo = Math.Max(1, columnas / 3);
+        var segundoPasillo = Math.Max(primerPasillo + 1, (columnas * 2) / 3);
+        return numero == primerPasillo || numero == segundoPasillo;
+    }
+}
+
+<section class="container-fluid px-lg-5 py-5 booking-page">
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <div class="card seat-card border-0 p-4">
+                <h2 class="fw-bold mb-3">Mapa de asientos</h2>
+                <p class="text-muted mb-1">Selecciona tus asientos para @horario?.Pelicula?.Titulo — @sala?.Nombre</p>
+                <p class="small text-muted mb-3">Distribución: @tipoDistribucion</p>
+                @if (TempData["ErrorAsientos"] != null) { <div class="alert alert-warning">@TempData["ErrorAsientos"]</div> }
+                <div class="text-center mb-4">
+                    <div class="cinema-screen">Pantalla · Sala @sala?.Letra</div>
+                </div>
+
+                <form asp-action="ConfirmarAsientos" method="post" id="formAsientos">
+                    <div class="seat-map overflow-auto @(esVip ? "seat-map-vip" : es4D ? "seat-map-4d" : "seat-map-normal")" id="seat-grid">
+                        @foreach (var fila in Model.GroupBy(a => a.Fila))
+                        {
+                            <div class="seat-row d-flex align-items-center justify-content-center gap-2 mb-2">
+                                <span class="seat-row-label fw-bold">@fila.Key</span>
+                                @foreach (var asiento in fila)
+                                {
+                                    var estado = asiento.Ocupado ? "ocupado" : (asiento.Seleccionado ? "seleccionado" : "disponible");
+                                    <button type="button"
+                                            class="seat-btn btn btn-sm @(estado == "ocupado" ? "btn-secondary disabled" : estado == "seleccionado" ? "btn-danger" : "btn-outline-secondary")"
+                                            style="@(HayPasilloDespues(asiento.Numero) ? "--seat-aisle:1;" : "")"
+                                            data-seat-id="@asiento.Id"
+                                            aria-label="Asiento @asiento.Fila@asiento.Numero"
+                                            @(estado == "ocupado" ? "disabled" : "")>
+                                        @asiento.Numero
+                                    </button>
+                                }
+                                <span class="seat-row-label fw-bold">@fila.Key</span>
+                            </div>
+                        }
+                    </div>
+                    <div id="selected-seat-values"></div>
+                    <button type="submit" class="btn btn-primary mt-4">Confirmar asientos</button>
+                </form>
+            </div>
+        </div>
+
+        <aside class="col-xl-3">
+            <div class="public-cart booking-summary">
+                <div class="public-cart-head"><span>🛒 Tu selección</span></div>
+                <div class="public-cart-body">
+                <h4 class="fw-bold">@horario?.Pelicula?.Titulo</h4>
+                <p class="text-muted">Sala @sala?.Letra · @horario?.FormatoFuncion</p><hr/>
+                <h5 class="fw-bold">Leyenda</h5>
+                <div class="d-flex align-items-center gap-2 mb-2"><span class="badge bg-outline-secondary">●</span> Disponible</div>
+                <div class="d-flex align-items-center gap-2 mb-2"><span class="badge bg-secondary">●</span> Ocupado</div>
+                <div class="d-flex align-items-center gap-2"><span class="badge bg-danger">●</span> Seleccionado</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('formAsientos');
+            const container = document.getElementById('selected-seat-values');
+            const buttons = document.querySelectorAll('.seat-btn');
+
+            const selected = new Set();
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const seatId = button.getAttribute('data-seat-id');
+
+                    if (button.classList.contains('btn-danger')) {
+                        button.classList.remove('btn-danger');
+                        button.classList.add('btn-outline-secondary');
+                        selected.delete(seatId);
+                    } else {
+                        button.classList.remove('btn-outline-secondary');
+                        button.classList.add('btn-danger');
+                        selected.add(seatId);
+                    }
+
+                    container.innerHTML = '';
+                    selected.forEach(id => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'asientosSeleccionados';
+                        input.value = id;
+                        container.appendChild(input);
+                    });
+                });
+            });
+
+            form.addEventListener('submit', (event) => {
+                const requeridos = @((Context.Session.GetInt32("ReservaAdultos") ?? 0) + (Context.Session.GetInt32("ReservaAlumnos") ?? 0) + (Context.Session.GetInt32("ReservaNinos") ?? 0));
+                if (selected.size !== requeridos) {
+                    event.preventDefault();
+                    alert(`Selecciona exactamente ${requeridos} asiento(s).`);
+                }
+            });
+        });
+    </script>
+}

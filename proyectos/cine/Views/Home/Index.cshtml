@@ -1,0 +1,99 @@
+@model IEnumerable<Cine.Models.Pelicula>
+
+@{
+    ViewData["Title"] = "Cartelera";
+    var sucursales = ViewBag.Sucursales as List<Cine.Models.Sucursal> ?? new();
+    var clasificaciones = new Dictionary<string, string>
+    {
+        ["AA"] = "Todo público; especialmente menores de 7 años",
+        ["A"] = "Todo público; recomendada para menores de 12 años",
+        ["B"] = "Mayores de 12 años",
+        ["B15"] = "Mayores de 15 años",
+        ["C"] = "Mayores de 18 años",
+        ["D"] = "Exclusiva para adultos"
+    };
+}
+
+<section class="cinema-hero">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-7">
+                <p class="text-uppercase fw-bold mb-3 letter-spacing">La cartelera está lista</p>
+                <h1 class="display-4 fw-bold mb-3">Tu próxima historia empieza aquí</h1>
+                <p class="lead text-muted">Elige película, horario y asientos en pocos pasos.</p>
+            </div>
+            <div class="col-lg-5">
+                <form method="get" class="hero-card p-4 rounded-4 shadow branch-picker">
+                    <span class="location-icon">⌖</span>
+                    <div class="flex-grow-1">
+                        <label for="sucursalId" class="small">Elige tu cine más cercano</label>
+                        <select id="sucursalId" name="sucursalId" class="form-select fw-bold mt-1" onchange="this.form.submit()">
+                            @foreach (var sucursal in sucursales)
+                            {
+                                if (sucursal.Id == (int?)ViewBag.SucursalId) { <option value="@sucursal.Id" selected>@sucursal.Nombre — @sucursal.Ciudad</option> }
+                                else { <option value="@sucursal.Id">@sucursal.Nombre — @sucursal.Ciudad</option> }
+                            }
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container-fluid px-lg-5 pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <p class="section-kicker mb-1">Ahora en cartelera</p>
+            <h2 class="fw-bold mb-0">Elige tu película</h2>
+        </div>
+    </div>
+
+    <form method="get" class="row g-2 mb-4 premium-filter">
+        <input type="hidden" name="sucursalId" value="@ViewBag.SucursalId" />
+        <div class="col-md-7"><input name="busqueda" value="@ViewBag.Busqueda" class="form-control" placeholder="Busca por título o director..." /></div>
+        <div class="col-md-3"><select name="genero" class="form-select"><option value="">Todos los géneros</option>@foreach(var item in ViewBag.Generos){if((string?)ViewBag.Genero == item){<option value="@item" selected>@item</option>}else{<option value="@item">@item</option>}}</select></div>
+        <div class="col-md-2"><button class="btn btn-danger w-100">Buscar</button></div>
+    </form>
+
+    <details class="classification-guide mb-4">
+        <summary>Guía de clasificación de películas</summary>
+        <div class="classification-grid">
+            <p><strong>AA:</strong> Para todo público, especialmente niños menores de 7 años. Sin violencia, escenas sexuales ni lenguaje ofensivo.</p>
+            <p><strong>A:</strong> Para todo público, apta para menores de 12 años. Puede incluir desnudos no eróticos y lenguaje leve.</p>
+            <p><strong>B:</strong> Apta para mayores de 12 años. Puede contener violencia moderada, lenguaje más fuerte y situaciones de riesgo.</p>
+            <p><strong>B15:</strong> Para mayores de 15 años. Incluye violencia, lenguaje fuerte y temas maduros.</p>
+            <p><strong>C:</strong> Para mayores de 18 años. Contenido adulto, sexual o violento intenso.</p>
+            <p><strong>D:</strong> Exclusiva para adultos, con contenido explícito y restringido legalmente.</p>
+        </div>
+        <small>Estas clasificaciones orientan a padres y tutores para proteger el desarrollo integral de los menores.</small>
+    </details>
+
+    <div class="movie-grid">
+        @foreach (var pelicula in Model)
+        {
+            <div>
+                <article class="movie-card h-100">
+                    <img src="@(string.IsNullOrWhiteSpace(pelicula.PosterUrl) ? "/images/poster-placeholder.svg" : pelicula.PosterUrl)" class="movie-poster" alt="Póster de @pelicula.Titulo" loading="lazy" onerror="this.onerror=null;this.src='/images/poster-placeholder.svg';" />
+                    <div class="movie-content">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <h3 class="movie-title">@pelicula.Titulo</h3>
+                            <span class="classification-badge" title="@clasificaciones.GetValueOrDefault(pelicula.Clasificacion, "Clasificación no especificada")">@pelicula.Clasificacion</span>
+                        </div>
+                        <p class="movie-meta">@pelicula.Genero · @pelicula.Duracion min</p>
+                        <p class="classification-meaning"><strong>@pelicula.Clasificacion</strong> (@clasificaciones.GetValueOrDefault(pelicula.Clasificacion, "Clasificación no especificada"))</p>
+                        @if (pelicula.Horarios.Any())
+                        {
+                            <a asp-controller="Reserva" asp-action="SeleccionarHorario" asp-route-id="@pelicula.Id" class="movie-link">ⓘ Ver horarios y sinopsis</a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary w-100 mt-3" disabled>Sin funciones disponibles</button>
+                        }
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+    @if (!Model.Any()) { <div class="empty-state text-center py-5"><div class="fs-1">🎬</div><h3>No encontramos películas</h3><p>Prueba con otro título, director o género.</p><a asp-action="Index" class="btn btn-outline-light">Ver toda la cartelera</a></div> }
+</section>

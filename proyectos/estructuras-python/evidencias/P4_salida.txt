@@ -1,0 +1,60 @@
+
+============================================================================
+P4. Reemplazar valor
+============================================================================
+1. Apilar entero
+2. Desapilar
+3. Reemplazar viejo por nuevo
+4. Mostrar pila
+0. Volver / salir
+Opción: 1
+Entero a apilar: 5
+Pila (cima a base): [5]
+
+============================================================================
+P4. Reemplazar valor
+============================================================================
+1. Apilar entero
+2. Desapilar
+3. Reemplazar viejo por nuevo
+4. Mostrar pila
+0. Volver / salir
+Opción: 1
+Entero a apilar: 2
+Pila (cima a base): [2, 5]
+
+============================================================================
+P4. Reemplazar valor
+============================================================================
+1. Apilar entero
+2. Desapilar
+3. Reemplazar viejo por nuevo
+4. Mostrar pila
+0. Volver / salir
+Opción: 1
+Entero a apilar: 5
+Pila (cima a base): [5, 2, 5]
+
+============================================================================
+P4. Reemplazar valor
+============================================================================
+1. Apilar entero
+2. Desapilar
+3. Reemplazar viejo por nuevo
+4. Mostrar pila
+0. Volver / salir
+Opción: 3
+Valor viejo que deseas reemplazar: 5
+Valor nuevo: 9
+Apariciones reemplazadas: 2
+Pila (cima a base): [9, 2, 9]
+
+============================================================================
+P4. Reemplazar valor
+============================================================================
+1. Apilar entero
+2. Desapilar
+3. Reemplazar viejo por nuevo
+4. Mostrar pila
+0. Volver / salir
+Opción: 0

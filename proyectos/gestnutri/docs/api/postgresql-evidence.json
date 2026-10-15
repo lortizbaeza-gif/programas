@@ -1,0 +1,60 @@
+{
+  "metadata": [
+    "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit",
+    "UTF8",
+    "C",
+    "C"
+  ],
+  "database_locale": {
+    "oid": "16384",
+    "datacl": null,
+    "datdba": "10",
+    "datname": "gestnutri_review",
+    "datctype": "C",
+    "encoding": 6,
+    "datlocale": "es",
+    "datcollate": "C",
+    "datminmxid": "1",
+    "daticurules": null,
+    "datallowconn": true,
+    "datconnlimit": -1,
+    "datfrozenxid": "731",
+    "datistemplate": false,
+    "dattablespace": "1663",
+    "datcollversion": "153.14.37",
+    "dathasloginevt": false,
+    "datlocprovider": "i"
+  },
+  "constraints": [
+    [
+      "patient_allergies_max_length",
+      "CHECK ((length(allergies) <= 2000))"
+    ],
+    [
+      "patient_first_name_not_empty",
+      "CHECK (((first_name)::text ~ '\\S'::text))"
+    ],
+    [
+      "patient_last_name_not_empty",
+      "CHECK (((last_name)::text ~ '\\S'::text))"
+    ],
+    [
+      "patient_phone_international",
+      "CHECK (((phone)::text ~ '^\\+[1-9][0-9]{7,14}$'::text))"
+    ],
+    [
+      "patient_restrictions_max_length",
+      "CHECK ((length(restrictions) <= 2000))"
+    ],
+    [
+      "patients_patient_owner_id_6784ca14_fk_auth_user_id",
+      "FOREIGN KEY (owner_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED"
+    ],
+    [
+      "patients_patient_pkey",
+      "PRIMARY KEY (id)"
+    ]
+  ],
+  "case_insensitive_accent_match": true,
+  "unaccented_match": false
+}

@@ -1,0 +1,3 @@
+@model Cine.Models.Proveedor
+@{ Layout="_AdminLayout"; ViewData["Title"]="Proveedor"; }
+<div class="container-fluid"><h2 class="fw-bold mb-4">Editar proveedor</h2><div class="card p-4 border-0 shadow-sm"><form asp-action="EditarProveedor"><input asp-for="Id" type="hidden"/><partial name="_ProveedorForm" model="Model"/><button class="btn btn-danger">Guardar</button> <a asp-action="Proveedores" class="btn btn-outline-secondary">Cancelar</a></form></div></div>

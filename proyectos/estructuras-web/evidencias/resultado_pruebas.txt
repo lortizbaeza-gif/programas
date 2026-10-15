@@ -1,0 +1,39 @@
+OK Lista: agregar y recorrer
+OK Lista: enlaces de extremos
+OK Lista: extraer cabeza, centro y cola
+OK Lista: vaciar y volver a utilizar
+OK Lista: ordenar estable por nombre
+OK Lista: ordenar vacía y buscar inexistente
+OK Pares: negativos y cero
+OK Calificaciones: 6.99 reprueba y 7 aprueba
+OK Calificaciones: fuera de rango
+OK Palabras: iniciales sin tildes y mayúsculas
+OK Pila: orden LIFO
+OK Pila: subflujo
+OK Invertir: UTM
+OK Invertir: caracteres acentuados
+OK Palíndromo: frase, tildes y números
+OK Palíndromo: negativo y sólo signos
+OK Suma: acarreo completo
+OK Suma: enteros con signo
+OK Suma: cancelación y ceros
+OK Suma: diez mil dígitos
+OK Suma: comparación de 200 casos con BigInt sólo como oráculo de prueba
+OK Suma: entradas inválidas
+OK Reemplazar: todas las coincidencias y orden
+OK Cola: FIFO
+OK Cola: llena y vacía
+OK Circular doble: 50 nodos y enlaces inversos
+OK Circular doble: salida FIFO, nodo único y vacío
+OK Estacionamiento: tarifa y fracciones
+OK Moneda: suma exacta y coma decimal
+OK Moneda: precio negativo, NaN y más de dos decimales
+OK Enteros: letras, decimales y rangos
+OK Texto: vacío y control
+OK Juego: primer coche y rechazo de color
+OK Juego: acierto FIFO, vaciado y nueva llegada
+OK Juego: acelera cada tres y mínimo de dos segundos
+OK Juego: fin exacto con cinco coches
+OK Juego: reinicio
+
+37/37 pruebas aprobadas.

@@ -56,3 +56,8 @@ No aplican a este prototipo: catálogo, carrito y pagos. No hay analítica ni pu
 
 Consulta `ENTREGA.md`. Repositorio: https://github.com/lortizbaeza-gif/programas. La carga inicial se realizó con ayuda de Codex; no se fabricó un historial de desarrollo del estudiante. El estudiante debe realizar cambios reales y guardarlos durante su propio desarrollo.
 
+
+
+## Otros proyectos de programación
+
+Consulta el [índice de proyectos anteriores](proyectos/README.md). Cada proyecto tiene su propia carpeta y una nota de recopilación. Incluye Cine, portal Jaguares, GestNutri, NutriGest, colas en C#, portal de noticias y prácticas de estructuras de datos en Python, web y JavaScript.

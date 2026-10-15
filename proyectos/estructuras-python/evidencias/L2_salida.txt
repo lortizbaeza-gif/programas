@@ -1,0 +1,22 @@
+
+============================================================================
+L2. Pares e impares
+============================================================================
+1. Generar lista aleatoria nueva
+2. Mostrar clasificación actual
+0. Volver / salir
+Opción: 1
+Cantidad de números (1-1000): 10
+Mínimo: -10
+Máximo: 10
+Original: [-7, 0, 6, 6, 10, -7, -3, 9, 9, 7]
+Pares: [0, 6, 6, 10]
+Impares: [-7, -7, -3, 9, 9, 7]
+
+============================================================================
+L2. Pares e impares
+============================================================================
+1. Generar lista aleatoria nueva
+2. Mostrar clasificación actual
+0. Volver / salir
+Opción: 0

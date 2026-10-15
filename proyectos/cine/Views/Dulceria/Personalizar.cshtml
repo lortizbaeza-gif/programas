@@ -1,0 +1,149 @@
+@model Cine.Models.ProductoAlimento
+
+@{
+    ViewData["Title"] = "Personalizar";
+    var incluyePalomitas = Model.TamanoPalomitas != "No aplica";
+    var cantidadBebidas = Math.Clamp(Model.CantidadBebidas, 0, 6);
+    if (Model.Categoria == "Bebida" && cantidadBebidas == 0) cantidadBebidas = 1;
+    var permiteCualquierTamano = Model.TamanoPalomitas == "Cualquier tamaño";
+    var tamanoFijo = Model.TamanoPalomitas switch
+    {
+        "Chicas" => "Pequeño",
+        "Medianas" => "Mediano",
+        "Grandes" => "Grande",
+        _ => "Mediano"
+    };
+    var saboresBebida = new[] { "Fanta", "Té", "Coca-Cola", "Mundet", "Agua" };
+    var incluyeNachos = Model.TamanoNachos != "No aplica";
+    var permiteCualquierTamanoNachos = Model.TamanoNachos == "Cualquier tamaño";
+}
+
+<section class="container py-5">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+            <img src="@Model.ImagenUrl" class="img-fluid rounded-4 shadow" alt="@Model.Nombre" />
+        </div>
+        <div class="col-lg-6">
+            <p class="text-uppercase text-danger fw-semibold mb-2">Personalización</p>
+            <h1 class="fw-bold mb-3">@Model.Nombre</h1>
+            <p class="text-muted">@Model.Descripcion</p>
+
+            <form asp-action="AgregarAlCarrito" method="post" class="card border-0 shadow-sm rounded-4 p-4">
+                <input type="hidden" name="id" value="@Model.Id" />
+                @if (incluyePalomitas && permiteCualquierTamano)
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tamaño de las palomitas</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="tamano" id="tamano-pequeno" value="Pequeño" />
+                            <label class="btn btn-outline-danger" for="tamano-pequeno">Chicas</label>
+                            <input type="radio" class="btn-check" name="tamano" id="tamano-mediano" value="Mediano" checked />
+                            <label class="btn btn-outline-danger" for="tamano-mediano">Medianas</label>
+                            <input type="radio" class="btn-check" name="tamano" id="tamano-grande" value="Grande" />
+                            <label class="btn btn-outline-danger" for="tamano-grande">Grandes</label>
+                        </div>
+                    </div>
+                }
+                else if (incluyePalomitas)
+                {
+                    <input type="hidden" name="tamano" value="@tamanoFijo" />
+                    <div class="combo-includes mb-3">
+                        <span>🍿</span>
+                        <div><small>Este combo incluye</small><strong>Palomitas @Model.TamanoPalomitas.ToLowerInvariant()</strong></div>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" name="tamano" value="No aplica" />
+                }
+
+                @if (incluyePalomitas)
+                {
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Sabor</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="sabor" id="sabor-mantequilla" value="Mantequilla" />
+                        <label class="btn btn-outline-secondary" for="sabor-mantequilla">Mantequilla</label>
+                        <input type="radio" class="btn-check" name="sabor" id="sabor-caramelo" value="Caramelo" checked />
+                        <label class="btn btn-outline-secondary" for="sabor-caramelo">Caramelo</label>
+                    </div>
+                </div>
+                }
+                else
+                {
+                    <input type="hidden" name="sabor" value="Original" />
+                }
+
+                @for (var numeroBebida = 1; numeroBebida <= cantidadBebidas; numeroBebida++)
+                {
+                    <div class="mb-3">
+                        <label for="bebida-@numeroBebida" class="form-label fw-semibold">
+                            @(cantidadBebidas == 1 ? "Sabor de la bebida" : $"Sabor de la bebida {numeroBebida}")
+                        </label>
+                        <select id="bebida-@numeroBebida" name="bebidas" class="form-select beverage-select" required>
+                            @foreach (var bebida in saboresBebida)
+                            {
+                                if (bebida == "Coca-Cola")
+                                {
+                                    <option value="@bebida" selected>@bebida</option>
+                                }
+                                else
+                                {
+                                    <option value="@bebida">@bebida</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                }
+
+                @if (incluyeNachos && permiteCualquierTamanoNachos)
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tamaño de los nachos</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="tamanoNachos" id="nachos-chicos" value="Chicos" />
+                            <label class="btn btn-outline-danger" for="nachos-chicos">Chicos</label>
+                            <input type="radio" class="btn-check" name="tamanoNachos" id="nachos-medianos" value="Medianos" checked />
+                            <label class="btn btn-outline-danger" for="nachos-medianos">Medianos</label>
+                            <input type="radio" class="btn-check" name="tamanoNachos" id="nachos-grandes" value="Grandes" />
+                            <label class="btn btn-outline-danger" for="nachos-grandes">Grandes</label>
+                        </div>
+                    </div>
+                }
+                else if (incluyeNachos)
+                {
+                    <input type="hidden" name="tamanoNachos" value="@Model.TamanoNachos" />
+                    <div class="combo-includes mb-3">
+                        <span>🧀</span>
+                        <div><small>Este combo incluye</small><strong>Nachos @Model.TamanoNachos.ToLowerInvariant()</strong></div>
+                    </div>
+                }
+
+                @if (incluyeNachos && Model.PermiteExtraQueso)
+                {
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="extraQueso" value="true" id="extra-queso" />
+                        <label class="form-check-label fw-semibold" for="extra-queso">Agregar extra queso a los nachos</label>
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Extras</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="agregarSalsa" value="true" id="extra-salsa" checked />
+                        <label class="form-check-label" for="extra-salsa">Agregar salsa</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="agregarHielo" value="true" id="extra-hielo" />
+                        <label class="form-check-label" for="extra-hielo">Agregar cubitos de hielo</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-4">$@Model.Precio.ToString("N2")</span>
+                    <button type="submit" class="btn btn-danger">Guardar y agregar al carrito</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

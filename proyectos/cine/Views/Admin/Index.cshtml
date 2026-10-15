@@ -1,0 +1,30 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-4">Dashboard Administrativo</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="text-muted">Películas activas</h5>
+                <h2 class="fw-bold">@ViewBag.TotalPeliculas</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="text-muted">Horarios registrados</h5>
+                <h2 class="fw-bold">@ViewBag.TotalHorarios</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="text-muted">Productos registrados</h5>
+                <h2 class="fw-bold">@ViewBag.TotalProductos</h2>
+            </div>
+        </div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm rounded-4 p-4"><h5 class="text-muted">Salas operativas</h5><h2 class="fw-bold">@ViewBag.TotalSalas</h2></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm rounded-4 p-4"><h5 class="text-muted">Ventas de hoy</h5><h2 class="fw-bold">$@ViewBag.VentasHoy.ToString("N2")</h2><small>@ViewBag.OrdenesHoy órdenes pagadas</small></div></div>
+    </div>
+</div>

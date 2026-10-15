@@ -1,0 +1,32 @@
+name: Tarea del sprint
+description: Trabajo asignado a un agente de NutriGest
+title: "[Txx] "
+body:
+  - type: input
+    id: sprint
+    attributes:
+      label: Sprint
+      placeholder: "1, 2 o 3"
+    validations:
+      required: true
+  - type: input
+    id: responsable
+    attributes:
+      label: Integrante y agente
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencias y requisito RF
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidencia de entrega
+      description: Archivos, pruebas ejecutadas y PR o commit.

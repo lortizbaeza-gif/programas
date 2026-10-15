@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Brújula: explora noticias en español de medios de todo el mundo.">
+  <title>Brújula | Tu perspectiva del mundo</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="Brújula, inicio"><span class="brand-mark" aria-hidden="true">↗</span> brújula<span class="brand-dot">.</span></a>
+    <div class="header-actions"><span class="edition">NOTICIAS EN ESPAÑOL</span><button class="icon-button" id="theme" aria-label="Activar modo oscuro" title="Cambiar tema">◐</button><button class="settings-button" id="settings">Configurar API <span aria-hidden="true">↗</span></button></div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span class="live-dot"></span> INFORMACIÓN QUE CONECTA</p><h1 id="hero-title">El mundo cambia.<br><em>Encuentra tu perspectiva.</em></h1><p class="intro">Explora noticias, descubre nuevas ideas y sigue los temas que te importan. Todo en un solo lugar.</p></div>
+      <div class="orbit-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><span class="orbit-arrow">↗</span><span class="orbit-label">EXPLORA · DESCUBRE · CONECTA</span></div>
+    </section>
+    <section class="search-section" aria-label="Buscar noticias">
+      <form id="search-form" class="search-form"><label class="sr-only" for="busqueda">Tema de búsqueda</label><span class="search-icon" aria-hidden="true">⌕</span><input id="busqueda" name="tema" placeholder="¿Qué te gustaría descubrir hoy?" maxlength="200" required autocomplete="off"><button id="search-button" type="submit">Buscar noticias <span aria-hidden="true">↗</span></button></form>
+      <p class="search-hint">Un tema, muchas perspectivas. Prueba con <button class="suggestion" data-query="inteligencia artificial">inteligencia artificial</button>, <button class="suggestion" data-query="ciencia">ciencia</button> o <button class="suggestion" data-query="cultura">cultura</button>.</p>
+    </section>
+    <section class="news-section" aria-labelledby="results-title"><div class="section-heading"><div><p class="eyebrow">TU VENTANA AL MUNDO</p><h2 id="results-title">Descubre las noticias</h2></div><span id="result-count" class="result-count">Consulta hasta 10 noticias</span></div><div id="status" class="status" role="status" aria-live="polite"></div><div id="news-grid" class="news-grid" aria-busy="false"></div></section>
+    <aside class="editorial-note"><span class="note-symbol" aria-hidden="true">✳</span><div><h3>Una noticia. Tu propio criterio.</h3><p>Lee la fuente original, compara perspectivas y mantén viva tu curiosidad.</p></div><span class="note-arrow" aria-hidden="true">↗</span></aside>
+  </main>
+  <footer><a class="brand footer-brand" href="./">brújula<span class="brand-dot">.</span></a><p>Noticias de GNews · Imágenes de los medios originales</p><span id="footer-year"></span></footer>
+  <dialog id="api-dialog"><form id="api-form"><div class="dialog-heading"><span class="eyebrow">CONECTA TU PORTAL</span><button type="button" id="close-dialog" class="icon-button" aria-label="Cerrar">×</button></div><h2>Tu acceso a las noticias.</h2><p>Obtén tu clave gratuita en <a href="https://gnews.io/" target="_blank" rel="noopener noreferrer">GNews</a> y pégala aquí. El plan gratuito debe usarse desde localhost.</p><label for="api-key">API Key de tu equipo</label><input id="api-key" type="password" autocomplete="off" spellcheck="false" required placeholder="Pega tu API Key"><p class="privacy-note">La clave se mantiene solo en esta pestaña y se envía a GNews al buscar. No se guarda en los archivos.</p><button class="primary-button" type="submit">Conectar GNews <span aria-hidden="true">↗</span></button><p id="api-message" role="status"></p></form></dialog>
+</body>
+</html>

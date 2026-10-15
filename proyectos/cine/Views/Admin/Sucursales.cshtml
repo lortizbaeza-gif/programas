@@ -1,0 +1,11 @@
+@model IEnumerable<Cine.Models.Sucursal>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Sucursales"; }
+<div class="container-fluid">
+    <div class="d-flex justify-content-between mb-4"><h2 class="fw-bold">Sucursales y complejos</h2><a asp-action="CrearSucursal" class="btn btn-danger">Nueva sucursal</a></div>
+    <div class="card border-0 shadow-sm">
+        <table class="table align-middle mb-0">
+            <thead class="table-light"><tr><th>Nombre</th><th>Ciudad</th><th>Dirección</th><th>Horario</th><th>Estado</th><th></th></tr></thead>
+            <tbody>@foreach(var s in Model){<tr><td class="fw-semibold">@s.Nombre</td><td>@s.Ciudad</td><td>@s.Direccion</td><td>@s.HorarioApertura – @s.HorarioCierre</td><td>@(s.Activa ? "Activa":"Inactiva")</td><td><a asp-action="SucursalDetalle" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Ver sucursal</a></td></tr>}</tbody>
+        </table>
+    </div>
+</div>

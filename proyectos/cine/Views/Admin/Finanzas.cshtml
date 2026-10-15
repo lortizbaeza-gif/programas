@@ -1,0 +1,191 @@
+@model IEnumerable<Cine.Models.MovimientoFinanciero>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Finanzas";
+}
+
+<div class="container-fluid finance-dashboard">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <p class="text-uppercase text-danger fw-bold small mb-1">Resultados del cine</p>
+            <h2 class="fw-bold mb-1">Finanzas y ventas</h2>
+            <p class="text-muted mb-0">Los datos se calculan automáticamente con todas las órdenes pagadas.</p>
+        </div>
+        <span class="badge rounded-pill text-bg-light border px-3 py-2">Actualizado @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-warning">@TempData["Error"]</div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card finance-kpi border-0 shadow-sm h-100">
+                <small>Total vendido</small>
+                <h3 class="text-success">$@ViewBag.TotalVentas.ToString("N2")</h3>
+                <span>@ViewBag.CantidadVentas ventas completadas</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card finance-kpi border-0 shadow-sm h-100">
+                <small>Productos y boletos vendidos</small>
+                <h3>@ViewBag.ArticulosVendidos</h3>
+                <span>Unidades acumuladas</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card finance-kpi border-0 shadow-sm h-100">
+                <small>Egresos registrados</small>
+                <h3 class="text-danger">$@ViewBag.Egresos.ToString("N2")</h3>
+                <span>Movimientos manuales</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card finance-kpi finance-kpi-primary border-0 shadow-sm h-100">
+                <small>Flujo neto</small>
+                <h3>$@ViewBag.FlujoNeto.ToString("N2")</h3>
+                <span>Ventas + otros ingresos - egresos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1">Comportamiento de ventas</h4>
+                        <p class="text-muted mb-0">Ingresos obtenidos durante los últimos 7 días</p>
+                    </div>
+                    <span class="chart-legend"><i></i> Ventas</span>
+                </div>
+                <div class="sales-chart-wrap">
+                    <canvas id="salesChart" aria-label="Gráfica de ventas de los últimos siete días" role="img"></canvas>
+                    <div id="emptyChart" class="chart-empty d-none">Todavía no hay ventas pagadas en estos 7 días.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <h4 class="fw-bold mb-1">¿Qué se ha vendido?</h4>
+                <p class="text-muted mb-4">Desglose acumulado por área</p>
+                <div class="sale-breakdown">
+                    <div>
+                        <span><b class="breakdown-dot tickets"></b>Boletos</span>
+                        <strong>$@ViewBag.VentasBoletos.ToString("N2")</strong>
+                    </div>
+                    <div>
+                        <span><b class="breakdown-dot food"></b>Dulcería</span>
+                        <strong>$@ViewBag.VentasDulceria.ToString("N2")</strong>
+                    </div>
+                    <div>
+                        <span><b class="breakdown-dot other"></b>Otros ingresos</span>
+                        <strong>$@ViewBag.Ingresos.ToString("N2")</strong>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">Ingreso total</span>
+                    <strong class="fs-4 text-success">$@((ViewBag.TotalVentas + ViewBag.Ingresos).ToString("N2"))</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-4 border-0 shadow-sm mb-4">
+        <h4 class="fw-bold mb-1">Registrar otro movimiento</h4>
+        <p class="text-muted mb-3">Utiliza este formulario para gastos u otros ingresos que no provengan de una venta.</p>
+        <form asp-action="CrearMovimientoFinanciero" method="post" class="row g-3">
+            <div class="col-md-2"><select name="Tipo" class="form-select"><option>Ingreso</option><option>Egreso</option></select></div>
+            <div class="col-md-3"><input name="Concepto" class="form-control" placeholder="Concepto" required /></div>
+            <div class="col-md-2"><input name="Monto" type="number" min="0.01" step="0.01" class="form-control" placeholder="Monto" required /></div>
+            <div class="col-md-3"><select name="Categoria" class="form-select"><option>Operación</option><option>Proveedor</option><option>Nómina</option><option>Servicios</option><option>Distribuidora</option></select></div>
+            <div class="col-md-2"><button class="btn btn-danger w-100">Registrar</button></div>
+        </form>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="p-4 pb-2"><h4 class="fw-bold">Movimientos manuales</h4></div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light"><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Categoría</th><th class="text-end">Monto</th></tr></thead>
+                <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-4">No hay movimientos manuales registrados.</td></tr>
+                }
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td><span class="badge @(m.Tipo == "Ingreso" ? "text-bg-success" : "text-bg-danger")">@m.Tipo</span></td>
+                        <td>@m.Concepto</td><td>@m.Categoria</td><td class="text-end fw-semibold">$@m.Monto.ToString("N2")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    const labels = @Html.Raw(ViewBag.EtiquetasVentas);
+    const values = @Html.Raw(ViewBag.DatosVentas);
+    const canvas = document.getElementById('salesChart');
+    const empty = document.getElementById('emptyChart');
+    if (!canvas || !values.some(value => value > 0)) {
+        canvas?.classList.add('d-none');
+        empty?.classList.remove('d-none');
+        return;
+    }
+
+    const draw = () => {
+        const ratio = window.devicePixelRatio || 1;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(ratio, ratio);
+        const pad = { top: 20, right: 18, bottom: 44, left: 65 };
+        const plotW = width - pad.left - pad.right;
+        const plotH = height - pad.top - pad.bottom;
+        const maxValue = Math.max(...values, 1);
+        const ceiling = Math.ceil(maxValue / 100) * 100 || 100;
+
+        ctx.font = '12px system-ui';
+        ctx.strokeStyle = '#e5eaf2';
+        ctx.fillStyle = '#718096';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+            const y = pad.top + plotH * i / 4;
+            ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(width - pad.right, y); ctx.stroke();
+            const value = ceiling * (1 - i / 4);
+            ctx.textAlign = 'right';
+            ctx.fillText('$' + value.toLocaleString('es-MX'), pad.left - 9, y + 4);
+        }
+
+        const slot = plotW / values.length;
+        const barWidth = Math.min(52, slot * .56);
+        values.forEach((value, index) => {
+            const barH = plotH * value / ceiling;
+            const x = pad.left + slot * index + (slot - barWidth) / 2;
+            const y = pad.top + plotH - barH;
+            const gradient = ctx.createLinearGradient(0, y, 0, pad.top + plotH);
+            gradient.addColorStop(0, '#3d73ee');
+            gradient.addColorStop(1, '#7aa0f7');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(x, y, barWidth, Math.max(barH, 2), 7);
+            ctx.fill();
+            ctx.fillStyle = '#52657a';
+            ctx.textAlign = 'center';
+            ctx.fillText(labels[index], x + barWidth / 2, height - 17);
+        });
+    };
+    draw();
+    window.addEventListener('resize', draw);
+})();
+</script>

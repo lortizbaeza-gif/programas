@@ -1,0 +1,264 @@
+{
+  "project": "NutriGest",
+  "dates": [
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08"
+  ],
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "Estructura y contrato API",
+      "sprint": 1,
+      "owner": "Orquestador",
+      "agent": "orquestador",
+      "dependencies": [],
+      "acceptance": "Estructura documentada; endpoints y campos compartidos",
+      "paths": [
+        "docs/",
+        "orchestrator/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/1"
+    },
+    {
+      "id": "T02",
+      "title": "Modelo Patient y Consultation",
+      "sprint": 1,
+      "owner": "Diana",
+      "agent": "datos",
+      "dependencies": [
+        "T01"
+      ],
+      "acceptance": "Migraciones aplicables; consultas vinculadas al paciente",
+      "paths": [
+        "backend/clinic/models.py",
+        "backend/clinic/migrations/",
+        "backend/clinic/management/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/2"
+    },
+    {
+      "id": "T03",
+      "title": "Sesión y API de pacientes RF01–04",
+      "sprint": 1,
+      "owner": "Genny",
+      "agent": "backend",
+      "dependencies": [
+        "T02"
+      ],
+      "acceptance": "Acceso sin sesión rechazado; alta, búsqueda y edición válidas",
+      "paths": [
+        "backend/clinic/views.py",
+        "backend/clinic/serializers.py",
+        "backend/config/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/3"
+    },
+    {
+      "id": "T04",
+      "title": "Login y pacientes",
+      "sprint": 1,
+      "owner": "Jilder",
+      "agent": "frontend",
+      "dependencies": [
+        "T01",
+        "T03"
+      ],
+      "acceptance": "Login, lista y formulario con errores visibles",
+      "paths": [
+        "frontend/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/4"
+    },
+    {
+      "id": "T05",
+      "title": "Pruebas de acceso y pacientes",
+      "sprint": 1,
+      "owner": "Luisa",
+      "agent": "calidad",
+      "dependencies": [
+        "T03"
+      ],
+      "acceptance": "Verificar acceso denegado, alta válida y campos inválidos",
+      "paths": [
+        "backend/clinic/tests.py",
+        "tests/",
+        ".github/workflows/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/5"
+    },
+    {
+      "id": "T06",
+      "title": "Mediciones y datos alimentarios RF07,10",
+      "sprint": 2,
+      "owner": "Diana",
+      "agent": "datos",
+      "dependencies": [
+        "T02"
+      ],
+      "acceptance": "Valor ausente distinto de cero; unidad y método explícitos",
+      "paths": [
+        "backend/clinic/models.py",
+        "backend/clinic/migrations/",
+        "backend/clinic/management/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/6"
+    },
+    {
+      "id": "T07",
+      "title": "API consultas, historial y comparación RF06–09,11–12",
+      "sprint": 2,
+      "owner": "Genny",
+      "agent": "backend",
+      "dependencies": [
+        "T06"
+      ],
+      "acceptance": "Orden por fecha; diferencias correctas; aviso si no comparable",
+      "paths": [
+        "backend/clinic/views.py",
+        "backend/clinic/serializers.py",
+        "backend/config/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/7"
+    },
+    {
+      "id": "T08",
+      "title": "Expediente, consultas e historial",
+      "sprint": 2,
+      "owner": "Jilder",
+      "agent": "frontend",
+      "dependencies": [
+        "T04",
+        "T07"
+      ],
+      "acceptance": "Registrar consulta y recuperarla al reabrir",
+      "paths": [
+        "frontend/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/8"
+    },
+    {
+      "id": "T09",
+      "title": "Casos límite de mediciones",
+      "sprint": 2,
+      "owner": "Luisa",
+      "agent": "calidad",
+      "dependencies": [
+        "T07"
+      ],
+      "acceptance": "Ausentes, cero y unidades incompatibles tratados correctamente",
+      "paths": [
+        "backend/clinic/tests.py",
+        "tests/",
+        ".github/workflows/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/9"
+    },
+    {
+      "id": "T10",
+      "title": "Integrar y congelar alcance",
+      "sprint": 3,
+      "owner": "Orquestador",
+      "agent": "orquestador",
+      "dependencies": [
+        "T05",
+        "T09"
+      ],
+      "acceptance": "Revisar entregas y resolver bloqueos; sin funciones nuevas",
+      "paths": [
+        "docs/",
+        "orchestrator/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/10"
+    },
+    {
+      "id": "T11",
+      "title": "Datos ficticios y correcciones de integración",
+      "sprint": 3,
+      "owner": "Diana y Genny",
+      "agent": "datos",
+      "dependencies": [
+        "T10"
+      ],
+      "acceptance": "Instalación limpia y recorrido reproducible con PostgreSQL",
+      "paths": [
+        "backend/clinic/models.py",
+        "backend/clinic/migrations/",
+        "backend/clinic/management/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/11"
+    },
+    {
+      "id": "T12",
+      "title": "Estados vacíos, carga y errores",
+      "sprint": 3,
+      "owner": "Jilder",
+      "agent": "frontend",
+      "dependencies": [
+        "T08"
+      ],
+      "acceptance": "Pantallas comprensibles con API real y fallos",
+      "paths": [
+        "frontend/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/12"
+    },
+    {
+      "id": "T13",
+      "title": "CI, prueba completa y guion de demostración",
+      "sprint": 3,
+      "owner": "Luisa",
+      "agent": "calidad",
+      "dependencies": [
+        "T11",
+        "T12"
+      ],
+      "acceptance": "Checks pasan; login→paciente→consulta→historial→comparación",
+      "paths": [
+        "backend/clinic/tests.py",
+        "tests/",
+        ".github/workflows/"
+      ],
+      "status": "pendiente",
+      "evidence": null,
+      "implementation_evidence": "docs/VALIDACION.md; implementación inicial por Codex, revisión del integrante pendiente",
+      "github_issue": "https://github.com/lortizbaeza-gif/nutrigest/issues/13"
+    }
+  ]
+}

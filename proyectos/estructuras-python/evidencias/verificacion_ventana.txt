@@ -1,0 +1,2 @@
+Tkinter: apertura, cola de tres coches, rechazo de color incorrecto, acierto FIFO, fin con cinco coches y reinicio: correctos.
+Escenarios con reloj controlado; las capturas corresponden a la ventana real del programa.

@@ -1,0 +1,3 @@
+@model Cine.Models.Sala
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Nueva sala"; }
+<div class="container-fluid"><h2 class="fw-bold mb-4">Registrar sala</h2><div class="card border-0 shadow-sm rounded-4 p-4"><form asp-action="CrearSala" method="post"><partial name="_SalaForm" model="Model" /><button class="btn btn-danger">Guardar sala</button> <a asp-action="Salas" class="btn btn-outline-secondary">Cancelar</a></form></div></div>

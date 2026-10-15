@@ -1,0 +1,36 @@
+@model IEnumerable<Cine.Models.Sala>
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Precios por sala y formato"; }
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-2">Precios por sala y formato</h2>
+    <p class="text-muted mb-4">Máximos permitidos: VIP $180; 2D $90; 3D y 4D $150 MXN por boleto.</p>
+    @if (TempData["Mensaje"] != null) { <div class="alert alert-success">@TempData["Mensaje"]</div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-warning">@TempData["Error"]</div> }
+    <div class="row g-4">
+        @foreach (var sala in Model)
+        {
+            var maximo2D = sala.Tipo == "VIP" ? 180 : 90;
+            var maximoPremium = sala.Tipo == "VIP" ? 180 : 150;
+            <div class="col-12">
+                <form asp-action="ActualizarPreciosSala" method="post" class="card border-0 shadow-sm rounded-4 p-4">
+                    <input type="hidden" name="id" value="@sala.Id" />
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div><h4 class="mb-0">Sala @sala.Letra — @sala.Tipo</h4><small class="text-muted">@sala.Nombre · máximo 2D: $@maximo2D · máximo 3D/4D: $@maximoPremium MXN</small></div>
+                        <div><span class="badge bg-secondary">2D</span> <span class="badge bg-dark">3D</span> <span class="badge bg-danger">4D</span></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead><tr><th>Formato</th><th>Adulto</th><th>Alumno</th><th>Niño</th></tr></thead>
+                            <tbody>
+                                <tr><th><span class="badge bg-secondary">2D</span></th><td><input name="precioAdulto" value="@sala.PrecioAdulto.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximo2D" step="0.01" class="form-control" /></td><td><input name="precioAlumno" value="@sala.PrecioAlumno.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximo2D" step="0.01" class="form-control" /></td><td><input name="precioNino" value="@sala.PrecioNino.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximo2D" step="0.01" class="form-control" /></td></tr>
+                                <tr><th><span class="badge bg-dark">3D</span></th><td><input name="precioAdulto3D" value="@sala.PrecioAdulto3D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td><td><input name="precioAlumno3D" value="@sala.PrecioAlumno3D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td><td><input name="precioNino3D" value="@sala.PrecioNino3D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td></tr>
+                                <tr><th><span class="badge bg-danger">4D</span></th><td><input name="precioAdulto4D" value="@sala.PrecioAdulto4D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td><td><input name="precioAlumno4D" value="@sala.PrecioAlumno4D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td><td><input name="precioNino4D" value="@sala.PrecioNino4D.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" type="number" min="0" max="@maximoPremium" step="0.01" class="form-control" /></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-danger">Guardar los nueve precios de Sala @sala.Letra</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

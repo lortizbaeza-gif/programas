@@ -1,0 +1,34 @@
+@model IEnumerable<Cine.Models.Sala>
+@{ Layout = "_AdminLayout"; ViewData["Title"] = "Salas"; }
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2 class="fw-bold mb-1">Salas y formatos</h2><p class="text-muted mb-0">@(ViewBag.Sucursal != null ? $"Sucursal: {ViewBag.Sucursal.Nombre}" : "Todas las sucursales")</p></div>
+        <a asp-action="CrearSala" asp-route-sucursalId="@ViewBag.SucursalId" class="btn btn-danger">Nueva sala</a>
+    </div>
+    @if (TempData["Error"] != null) { <div class="alert alert-warning">@TempData["Error"]</div> }
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light"><tr><th>Sucursal</th><th>Sala</th><th>Tipo/capacidades</th><th>Distribución</th><th>Precios A/A/N</th><th>Aforo</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var sala in Model)
+                {
+                    <tr>
+                        <td>@sala.Sucursal?.Nombre</td>
+                        <td class="fw-semibold">Sala @sala.Letra — @sala.Nombre</td>
+                        <td><span class="badge @(sala.Tipo == "VIP" ? "bg-warning text-dark" : "bg-secondary")">@sala.Tipo</span> @if(sala.Soporta3D){<span class="badge bg-dark">3D</span>} @if(sala.Soporta4D){<span class="badge bg-danger">4D</span>}</td>
+                        <td>@sala.Filas filas × @sala.Columnas asientos</td>
+                        <td>$@sala.PrecioAdulto.ToString("N2") / $@sala.PrecioAlumno.ToString("N2") / $@sala.PrecioNino.ToString("N2")</td>
+                        <td>@(sala.Filas * sala.Columnas) lugares</td>
+                        <td class="text-end">
+                            <a asp-action="EditarSala" asp-route-id="@sala.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <form asp-action="EliminarSala" asp-route-id="@sala.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger">Eliminar</button></form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+@model IEnumerable<Cine.Models.ProductoAlimento>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dulcería";
+}
+
+<div class="container-fluid">
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gestión de Dulcería</h2>
+        <a asp-action="CrearProducto" class="btn btn-danger">Nuevo producto</a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Existencia</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model)
+                    {
+                        <tr>
+                            <td>@producto.Nombre</td>
+                            <td>
+                                @producto.Categoria
+                                @if (producto.CantidadBebidas > 0)
+                                {
+                                    <div><small class="text-muted">@producto.CantidadBebidas bebida(s)</small></div>
+                                }
+                                @if (producto.TamanoPalomitas != "No aplica")
+                                {
+                                    <div><small class="text-muted">Palomitas: @producto.TamanoPalomitas</small></div>
+                                }
+                                @if (producto.TamanoNachos != "No aplica")
+                                {
+                                    <div><small class="text-muted">Nachos: @producto.TamanoNachos@(producto.PermiteExtraQueso ? " · extra queso disponible" : "")</small></div>
+                                }
+                            </td>
+                            <td>$@producto.Precio.ToString("N2")</td>
+                            <td>
+                                <span class="badge @(producto.Existencia > 0 ? "bg-success" : "bg-secondary")">
+                                    @producto.Existencia
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="EditarProducto" asp-route-id="@producto.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <form asp-action="EliminarProducto" asp-route-id="@producto.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

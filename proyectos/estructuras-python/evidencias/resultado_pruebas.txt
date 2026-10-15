@@ -1,0 +1,39 @@
+test_banco_lleno_vacio_y_capacidad (test_menus.MenusTest.test_banco_lleno_vacio_y_capacidad) ... ok
+test_calificaciones_datos_incorrectos (test_menus.MenusTest.test_calificaciones_datos_incorrectos) ... ok
+test_compra_duplicado_y_total (test_menus.MenusTest.test_compra_duplicado_y_total) ... ok
+test_lista_productos_clave_inexistente (test_menus.MenusTest.test_lista_productos_clave_inexistente) ... ok
+test_listas_registro_entre_opciones (test_menus.MenusTest.test_listas_registro_entre_opciones) ... ok
+test_palabras (test_menus.MenusTest.test_palabras) ... ok
+test_pares_menu_validado (test_menus.MenusTest.test_pares_menu_validado) ... ok
+test_parking_duplicado_vacio_y_salida (test_menus.MenusTest.test_parking_duplicado_vacio_y_salida) ... ok
+test_pilas_menu_varios_ejercicios (test_menus.MenusTest.test_pilas_menu_varios_ejercicios) ... ok
+test_reemplazar_consola (test_menus.MenusTest.test_reemplazar_consola) ... ok
+test_banco_fifo_espera (test_practica.ColasTest.test_banco_fifo_espera) ... ok
+test_juego_aceleracion (test_practica.ColasTest.test_juego_aceleracion) ... ok
+test_juego_fin_exacto (test_practica.ColasTest.test_juego_fin_exacto) ... ok
+test_juego_primera_llegada_y_error (test_practica.ColasTest.test_juego_primera_llegada_y_error) ... ok
+test_parking_cobro_y_fifo (test_practica.ColasTest.test_parking_cobro_y_fifo) ... ok
+test_record_persistencia (test_practica.ColasTest.test_record_persistencia) ... ok
+test_cola_circular_invariantes (test_practica.EstructurasTest.test_cola_circular_invariantes) ... ok
+test_cola_fifo_llena_vacia (test_practica.EstructurasTest.test_cola_fifo_llena_vacia) ... ok
+test_lista_extremos_y_orden (test_practica.EstructurasTest.test_lista_extremos_y_orden) ... ok
+test_pila_lifo_y_vacia (test_practica.EstructurasTest.test_pila_lifo_y_vacia) ... ok
+test_calificaciones_limite (test_practica.ListasTest.test_calificaciones_limite) ... ok
+test_compra_orden_total_claves (test_practica.ListasTest.test_compra_orden_total_claves) ... ok
+test_inventario_retiro (test_practica.ListasTest.test_inventario_retiro) ... ok
+test_palabras_grupos_nuevos (test_practica.ListasTest.test_palabras_grupos_nuevos) ... ok
+test_pares_cero_negativos (test_practica.ListasTest.test_pares_cero_negativos) ... ok
+test_invertir (test_practica.PilasTest.test_invertir) ... ok
+test_palindromos (test_practica.PilasTest.test_palindromos) ... ok
+test_reemplazo_orden (test_practica.PilasTest.test_reemplazo_orden) ... ok
+test_suma_casos_y_signos (test_practica.PilasTest.test_suma_casos_y_signos) ... ok
+test_suma_diez_mil_digitos (test_practica.PilasTest.test_suma_diez_mil_digitos) ... ok
+test_sumas_aleatorias (test_practica.PilasTest.test_sumas_aleatorias) ... ok
+test_decimal_reintenta (test_practica.ValidacionTest.test_decimal_reintenta) ... ok
+test_entero_reintenta (test_practica.ValidacionTest.test_entero_reintenta) ... ok
+test_texto_vacio (test_practica.ValidacionTest.test_texto_vacio) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.113s
+
+OK

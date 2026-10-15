@@ -1,0 +1,23 @@
+@model Cine.Models.Sucursal
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.Nombre;
+    var peliculas = ViewBag.Peliculas as List<Cine.Models.Pelicula> ?? new();
+    var productos = ViewBag.Productos as List<Cine.Models.ProductoAlimento> ?? new();
+}
+<div class="container-fluid">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div><p class="text-danger text-uppercase fw-bold small mb-1">Sucursal seleccionada</p><h2 class="fw-bold mb-1">@Model.Nombre</h2><p class="text-muted mb-0">@Model.Direccion, @Model.Ciudad · @Model.HorarioApertura–@Model.HorarioCierre</p></div>
+        <a asp-action="Sucursales" class="btn btn-outline-secondary">Cambiar sucursal</a>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4"><div class="card border-0 shadow-sm p-4"><small>Salas</small><h3>@Model.Salas.Count</h3><a asp-action="Salas" asp-route-sucursalId="@Model.Id">Administrar salas</a></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm p-4"><small>Películas en exhibición</small><h3>@peliculas.Count</h3><a asp-action="Peliculas" asp-route-sucursalId="@Model.Id">Ver películas</a></div></div>
+        <div class="col-md-4"><div class="card border-0 shadow-sm p-4"><small>Productos compartidos</small><h3>@productos.Count</h3><a asp-action="Dulceria">Ver dulcería</a></div></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-6"><div class="card border-0 shadow-sm p-4 h-100"><div class="d-flex justify-content-between"><h4 class="fw-bold">Salas</h4><a asp-action="CrearSala" asp-route-sucursalId="@Model.Id" class="btn btn-sm btn-danger">Nueva sala</a></div>@if(!Model.Salas.Any()){<p class="text-muted mt-3">Esta sucursal todavía no tiene salas.</p>}else{<div class="list-group list-group-flush mt-2">@foreach(var sala in Model.Salas.OrderBy(s=>s.Letra)){<a asp-action="EditarSala" asp-route-id="@sala.Id" class="list-group-item list-group-item-action d-flex justify-content-between"><span><strong>Sala @sala.Letra</strong> · @sala.Nombre</span><span>@sala.Tipo / @sala.Formato</span></a>}</div>}</div></div>
+        <div class="col-lg-6"><div class="card border-0 shadow-sm p-4 h-100"><div class="d-flex justify-content-between"><h4 class="fw-bold">Películas</h4><a asp-action="CrearPelicula" asp-route-sucursalId="@Model.Id" class="btn btn-sm btn-danger">Programar película</a></div>@if(!peliculas.Any()){<p class="text-muted mt-3">No hay películas con horarios en esta sucursal.</p>}else{<div class="list-group list-group-flush mt-2">@foreach(var pelicula in peliculas){<div class="list-group-item d-flex justify-content-between"><span>@pelicula.Titulo</span><span class="badge bg-secondary">@pelicula.Clasificacion</span></div>}</div>}</div></div>
+        <div class="col-12"><div class="card border-0 shadow-sm p-4"><h4 class="fw-bold">Comida y combos compartidos</h4><p class="text-muted">Este mismo catálogo está disponible para todas las sucursales.</p><div class="row g-2">@foreach(var producto in productos.Take(12)){<div class="col-md-4 col-xl-3"><div class="border rounded-3 p-3 h-100"><strong>@producto.Nombre</strong><div class="small text-muted">@producto.Categoria · $@producto.Precio.ToString("N2")</div></div></div>}</div></div></div>
+    </div>
+</div>

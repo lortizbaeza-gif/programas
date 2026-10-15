@@ -1,0 +1,88 @@
+@model Cine.Models.Pelicula
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Editar película";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-4">Editar Película</h2>
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+        <form asp-action="EditarPelicula" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Título</label>
+                    <input asp-for="Titulo" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Director</label>
+                    <input asp-for="Director" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Género</label>
+                    <select asp-for="Genero" class="form-select" required>
+                        <option value="">Selecciona un género</option>
+                        <option value="Comedia">Comedia — Busca hacer reír al público</option>
+                        <option value="Drama">Drama — Conflictos emocionales y situaciones serias</option>
+                        <option value="Ciencia ficción">Ciencia ficción — Conceptos futuristas y tecnológicos</option>
+                        <option value="Fantasía">Fantasía — Elementos mágicos o sobrenaturales</option>
+                        <option value="Terror">Terror — Diseñada para asustar o provocar miedo</option>
+                        <option value="Biografía">Biografía — Vida e historia de una persona real</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Clasificación</label>
+                    <select asp-for="Clasificacion" class="form-control" required>
+                        <option value="AA">AA — Todo público, especialmente menores de 7 años</option>
+                        <option value="A">A — Todo público, apta para menores de 12 años</option>
+                        <option value="B">B — Mayores de 12 años</option>
+                        <option value="B15">B15 — Mayores de 15 años</option>
+                        <option value="C">C — Mayores de 18 años</option>
+                        <option value="D">D — Exclusiva para adultos</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Duración (minutos)</label>
+                    <input asp-for="Duracion" type="number" min="1" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Salas donde estará disponible</label>
+                    <div class="row g-2">
+                        @foreach (Cine.Models.Sala sala in ViewBag.Salas)
+                        {
+                            var seleccionadas = ViewBag.SalasSeleccionadas as HashSet<int>;
+                            <div class="col-12"><label class="form-check border rounded-3 p-2 w-100">@if(seleccionadas?.Contains(sala.Id) == true){<input class="form-check-input" type="checkbox" name="salasSeleccionadas" value="@sala.Id" checked />}else{<input class="form-check-input" type="checkbox" name="salasSeleccionadas" value="@sala.Id" />} <span class="form-check-label">Sala @sala.Letra — @sala.Tipo @if(sala.Soporta3D){<span class="badge bg-dark">3D</span>} @if(sala.Soporta4D){<span class="badge bg-danger">4D</span>}</span></label></div>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Cambiar póster (archivo de tu computadora)</label>
+                    <input name="posterArchivo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="form-control" onchange="previsualizarArchivo(this)" />
+                    <small class="form-text text-muted">Déjalo vacío para conservar la imagen actual. Máximo 5 MB.</small>
+                    <img id="vistaPoster" src="@(string.IsNullOrWhiteSpace(Model.PosterUrl) ? "/images/poster-placeholder.svg" : Model.PosterUrl)" alt="Vista previa del póster" class="mt-3 rounded border" style="width:140px;height:200px;object-fit:cover" onerror="this.onerror=null;this.src='/images/poster-placeholder.svg';" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Sinopsis</label>
+                    <textarea asp-for="Sinopsis" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input asp-for="Activa" type="checkbox" class="form-check-input" />
+                        <label asp-for="Activa" class="form-check-label">Película activa en cartelera</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-danger">Guardar cambios</button>
+                <a asp-action="Peliculas" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function previsualizarPoster(url) { document.getElementById('vistaPoster').src = url || '/images/poster-placeholder.svg'; }
+function previsualizarArchivo(input) { if (input.files && input.files[0]) document.getElementById('vistaPoster').src = URL.createObjectURL(input.files[0]); }
+</script>

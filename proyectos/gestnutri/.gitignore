@@ -1,0 +1,23 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+staticfiles/
+media/
+
+# Node / React
+node_modules/
+dist/
+.vite/
+
+# Local tools
+.pytest_cache/
+.coverage
+coverage/
+.DS_Store

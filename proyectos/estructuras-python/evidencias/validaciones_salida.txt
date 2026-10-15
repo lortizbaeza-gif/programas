@@ -1,0 +1,33 @@
+
+============================================================================
+L3. Aprobados y reprobados
+============================================================================
+1. Registrar alumno
+2. Mostrar las dos listas
+0. Volver / salir
+Opción: x
+Introducir sólo números enteros.
+Opción: 1
+Nombre del alumno: 
+Hay datos faltantes. Escribe un texto.
+Nombre del alumno: Ana
+Calificación (0-10): once
+Introducir sólo números. Usa punto o coma decimal, sin separadores de miles.
+Calificación (0-10): 11
+El valor debe estar entre 0 y 10.
+Calificación (0-10): 7.5
+Alumno registrado y clasificado.
+APROBADOS (7 o más)
+Nombre | Calificación
+-------+-------------
+Ana    | 7.5         
+REPROBADOS (menos de 7)
+(Sin registros)
+
+============================================================================
+L3. Aprobados y reprobados
+============================================================================
+1. Registrar alumno
+2. Mostrar las dos listas
+0. Volver / salir
+Opción: 0

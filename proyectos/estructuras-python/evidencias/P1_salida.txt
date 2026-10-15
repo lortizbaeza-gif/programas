@@ -1,0 +1,3 @@
+Palabra a invertir: UTM
+Original: UTM
+Invertida: MTU

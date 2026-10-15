@@ -1,0 +1,133 @@
+@model Cine.Models.Pelicula
+
+@{
+    ViewData["Title"] = "Seleccionar horario";
+}
+
+<section class="movie-detail-hero" style="--movie-backdrop:url('@Model.PosterUrl')">
+    <div class="container py-5 text-center">
+        <span class="classification-badge">@Model.Clasificacion</span>
+        <h1 class="fw-bold mt-3">@Model.Titulo</h1>
+        <p>@Model.Duracion min · @Model.Genero</p>
+    </div>
+</section>
+<section class="container-fluid px-lg-5 py-5 booking-page">
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <div class="location-bar mb-4"><span class="location-icon">⌖</span><strong>CINE+ Centro</strong></div>
+            <h2 class="fw-bold mb-4">Elige horario y boletos</h2>
+            <div class="card booking-card border-0 p-4">
+                @if (TempData["ErrorBoletos"] != null)
+                {
+                    <div class="alert alert-warning">@TempData["ErrorBoletos"]</div>
+                }
+                <div class="row g-3">
+                    @if (Model.Horarios.Any())
+                    {
+                        @foreach (var horario in Model.Horarios)
+                        {
+                            var precioAdulto = horario.FormatoFuncion == "3D" ? horario.Sala?.PrecioAdulto3D : horario.FormatoFuncion == "4D" ? horario.Sala?.PrecioAdulto4D : horario.Sala?.PrecioAdulto;
+                            var precioAlumno = horario.FormatoFuncion == "3D" ? horario.Sala?.PrecioAlumno3D : horario.FormatoFuncion == "4D" ? horario.Sala?.PrecioAlumno4D : horario.Sala?.PrecioAlumno;
+                            var precioNino = horario.FormatoFuncion == "3D" ? horario.Sala?.PrecioNino3D : horario.FormatoFuncion == "4D" ? horario.Sala?.PrecioNino4D : horario.Sala?.PrecioNino;
+                            <div class="col-md-6 col-xxl-4">
+                                <form asp-controller="Reserva" asp-action="SeleccionarBoletos" method="post" class="ticket-form">
+                                    <input type="hidden" name="horarioId" value="@horario.Id" />
+                                    <div class="showtime-card p-3">
+                                        <div class="d-flex justify-content-between align-items-center gap-2">
+                                            <div class="fw-bold">Sala @horario.Sala?.Letra — @horario.Sala?.Nombre</div>
+                                            <div>
+                                                <span class="badge @(horario.Sala?.Tipo == "VIP" ? "bg-warning text-dark" : "bg-secondary")">@horario.Sala?.Tipo</span>
+                                                <span class="badge bg-dark">@horario.FormatoFuncion</span>
+                                            </div>
+                                        </div>
+                                        <div class="showtime-time">@horario.Hora.ToString(@"hh\:mm")</div>
+                                        <div class="text-muted">@horario.Fecha.ToString("dddd, dd MMM")</div>
+
+                                        <div class="mt-3 d-grid gap-2">
+                                            <div class="ticket-type border rounded-3 p-2 d-flex align-items-center justify-content-between" data-price="@precioAdulto">
+                                                <div><strong>Adulto</strong><div class="text-muted small">$@precioAdulto?.ToString("N2") c/u</div></div>
+                                                <div class="input-group input-group-sm ticket-quantity">
+                                                    <button type="button" class="btn btn-outline-secondary quantity-minus">−</button>
+                                                    <input type="number" name="adultos" class="form-control text-center quantity-input" min="0" max="20" value="0" aria-label="Cantidad de adultos" />
+                                                    <button type="button" class="btn btn-outline-secondary quantity-plus">+</button>
+                                                </div>
+                                            </div>
+                                            <div class="ticket-type border rounded-3 p-2 d-flex align-items-center justify-content-between" data-price="@precioAlumno">
+                                                <div><strong>Alumno</strong><div class="text-muted small">$@precioAlumno?.ToString("N2") c/u</div></div>
+                                                <div class="input-group input-group-sm ticket-quantity">
+                                                    <button type="button" class="btn btn-outline-secondary quantity-minus">−</button>
+                                                    <input type="number" name="alumnos" class="form-control text-center quantity-input" min="0" max="20" value="0" aria-label="Cantidad de alumnos" />
+                                                    <button type="button" class="btn btn-outline-secondary quantity-plus">+</button>
+                                                </div>
+                                            </div>
+                                            <div class="ticket-type border rounded-3 p-2 d-flex align-items-center justify-content-between" data-price="@precioNino">
+                                                <div><strong>Niño</strong><div class="text-muted small">$@precioNino?.ToString("N2") c/u</div></div>
+                                                <div class="input-group input-group-sm ticket-quantity">
+                                                    <button type="button" class="btn btn-outline-secondary quantity-minus">−</button>
+                                                    <input type="number" name="ninos" class="form-control text-center quantity-input" min="0" max="20" value="0" aria-label="Cantidad de niños" />
+                                                    <button type="button" class="btn btn-outline-secondary quantity-plus">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mt-3 fw-semibold">
+                                            <span><span class="ticket-count">0</span> boleto(s)</span>
+                                            <span>Total: $<span class="ticket-total">0.00</span></span>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-3 w-100">Elegir asientos</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12"><div class="alert alert-warning mb-0">No hay horarios disponibles por el momento.</div></div>
+                    }
+                </div>
+            </div>
+        </div>
+        <aside class="col-xl-3"><div class="public-cart booking-summary"><div class="public-cart-head"><span>🛒 Tu selección</span></div><div class="public-cart-body"><h4>@Model.Titulo</h4><p class="text-muted">@Model.Clasificacion · @Model.Duracion min</p><hr/><p>@Model.Sinopsis</p></div></div></aside>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.ticket-form').forEach(form => {
+            const updateTotal = () => {
+                let count = 0;
+                let total = 0;
+                form.querySelectorAll('.ticket-type').forEach(type => {
+                    const quantity = Number(type.querySelector('.quantity-input').value) || 0;
+                    count += quantity;
+                    total += quantity * (Number(type.dataset.price) || 0);
+                });
+                form.querySelector('.ticket-count').textContent = count;
+                form.querySelector('.ticket-total').textContent = total.toFixed(2);
+            };
+
+            form.querySelectorAll('.ticket-type').forEach(type => {
+                const input = type.querySelector('.quantity-input');
+                type.querySelector('.quantity-minus').addEventListener('click', () => {
+                    input.value = Math.max(0, (Number(input.value) || 0) - 1);
+                    updateTotal();
+                });
+                type.querySelector('.quantity-plus').addEventListener('click', () => {
+                    input.value = Math.min(20, (Number(input.value) || 0) + 1);
+                    updateTotal();
+                });
+                input.addEventListener('input', updateTotal);
+            });
+
+            form.addEventListener('submit', event => {
+                const selected = [...form.querySelectorAll('.quantity-input')]
+                    .reduce((sum, input) => sum + (Number(input.value) || 0), 0);
+                if (selected < 1) {
+                    event.preventDefault();
+                    alert('Selecciona al menos un boleto de adulto, alumno o niño.');
+                }
+            });
+            updateTotal();
+        });
+    </script>
+}

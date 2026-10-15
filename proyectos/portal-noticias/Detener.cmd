@@ -1,0 +1,2 @@
+@echo off
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$portalPidPath=Join-Path '%~dp0' '.servidor.pid'; if(Test-Path -LiteralPath $portalPidPath){$portalServerId=[int](Get-Content -LiteralPath $portalPidPath); $portalProcess=Get-CimInstance Win32_Process -Filter ('ProcessId = '+$portalServerId); if($portalProcess -and $portalProcess.Name -eq 'node.exe' -and $portalProcess.CommandLine.Contains((Join-Path '%~dp0' 'servidor.cjs'))){Stop-Process -Id $portalServerId}; Remove-Item -LiteralPath $portalPidPath}"

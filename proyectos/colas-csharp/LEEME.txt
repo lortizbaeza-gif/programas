@@ -1,0 +1,15 @@
+EJEMPLOS DE COLAS Y CLASES GENERICAS EN C#
+
+1. Abre EjemplosCola.sln con Visual Studio compatible con .NET 10.
+2. En el Explorador de soluciones, abre EjemplosCola > Program.cs.
+3. Presiona Ctrl + F5 para ejecutar y ver los resultados en la consola.
+
+Program.cs incluye comentarios que explican el código y tres ejemplos:
+- Queue<string>, una colección genérica de .NET.
+- ColaGenerica<string>, nuestra clase genérica con nombres.
+- ColaGenerica<int>, la misma clase con números enteros.
+
+También puedes ejecutarlo desde una terminal en esta carpeta:
+dotnet run --project EjemplosCola/EjemplosCola.csproj
+
+El proyecto utiliza .NET 10, disponible en el equipo donde se creó.

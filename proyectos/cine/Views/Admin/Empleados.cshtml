@@ -1,0 +1,3 @@
+@model IEnumerable<Cine.Models.Empleado>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Personal"; }
+<div class="container-fluid"><div class="d-flex justify-content-between mb-4"><h2 class="fw-bold">Personal y turnos</h2><a asp-action="CrearEmpleado" class="btn btn-danger">Nuevo empleado</a></div><div class="card border-0 shadow-sm"><table class="table mb-0"><thead class="table-light"><tr><th>Nombre</th><th>Puesto</th><th>Turno</th><th>Contacto</th><th>Estado</th></tr></thead><tbody>@foreach(var e in Model){<tr><td>@e.Nombre</td><td>@e.Puesto</td><td>@e.Turno</td><td>@e.Telefono<br/><small>@e.Email</small></td><td>@(e.Activo ? "Activo":"Baja")</td></tr>}</tbody></table></div></div>

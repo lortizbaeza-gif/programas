@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Cine</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="admin-body">
+    <div class="d-flex min-vh-100 admin-shell">
+        <aside class="admin-sidebar d-flex flex-column p-3 text-white">
+            <a class="admin-brand" asp-controller="Admin" asp-action="Index"><span class="brand-icon">▶</span> CINE<span>+</span> <small>ADMIN</small></a>
+            <p class="admin-caption">Centro de operaciones</p>
+            <ul class="nav nav-pills flex-column gap-2">
+                <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index">Dashboard Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Peliculas">Gestión de Películas</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Horarios">Programación de Horarios</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Salas">Salas y Aforo</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="PreciosBoletos">Precios de Boletos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Dulceria">Gestión de Dulcería</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Inventario">Inventario</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Proveedores">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Club">Club de Cine</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Promociones">Promociones</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Reportes">Reportes y Corte</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Ventas">Ventas y Reembolsos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Sucursales">Sucursales</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Empleados">Personal y Turnos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Taquilla">Taquilla y Cajas</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Soporte">Atención al Cliente</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Mantenimiento">Mantenimiento</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Activos">Activos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Finanzas">Finanzas</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="OperacionSalas">Operación de Salas</a></li>
+                <li class="nav-item"><a class="nav-link text-white" asp-controller="Admin" asp-action="Seguridad">Seguridad y Usuarios</a></li>
+            </ul>
+        </aside>
+
+        <main class="flex-grow-1 p-4 admin-main">
+            <div class="admin-topbar"><div><span class="admin-eyebrow">CINE+ OPERATIONS</span><span class="admin-topbar-title">Gestión inteligente del cine</span></div><span class="admin-status"><i></i> Sistema operativo</span></div>
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

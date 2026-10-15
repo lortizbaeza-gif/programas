@@ -1,0 +1,57 @@
+
+============================================================================
+L4. Eliminar y ordenar productos
+============================================================================
+1. Agregar producto
+2. Eliminar por clave
+3. Ordenar por nombre y ver total
+0. Volver / salir
+Opción: 1
+Clave única: P02
+Nombre del producto: Pan
+Precio: $18.50
+Clave | Nombre | Cantidad | Precio
+------+--------+----------+-------
+P02   | Pan    | 1        | $18.50
+TOTAL DE COMPRA: $18.50
+
+============================================================================
+L4. Eliminar y ordenar productos
+============================================================================
+1. Agregar producto
+2. Eliminar por clave
+3. Ordenar por nombre y ver total
+0. Volver / salir
+Opción: 1
+Clave única: P01
+Nombre del producto: Arroz
+Precio: $25.20
+Clave | Nombre | Cantidad | Precio
+------+--------+----------+-------
+P01   | Arroz  | 1        | $25.20
+P02   | Pan    | 1        | $18.50
+TOTAL DE COMPRA: $43.70
+
+============================================================================
+L4. Eliminar y ordenar productos
+============================================================================
+1. Agregar producto
+2. Eliminar por clave
+3. Ordenar por nombre y ver total
+0. Volver / salir
+Opción: 2
+Clave a eliminar: P02
+Producto eliminado.
+Clave | Nombre | Cantidad | Precio
+------+--------+----------+-------
+P01   | Arroz  | 1        | $25.20
+TOTAL DE COMPRA: $25.20
+
+============================================================================
+L4. Eliminar y ordenar productos
+============================================================================
+1. Agregar producto
+2. Eliminar por clave
+3. Ordenar por nombre y ver total
+0. Volver / salir
+Opción: 0

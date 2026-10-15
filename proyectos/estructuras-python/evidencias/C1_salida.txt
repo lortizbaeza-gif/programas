@@ -1,0 +1,85 @@
+
+============================================================================
+C1. Ventanilla de un banco
+============================================================================
+1. Agregar cliente
+2. Atender en ventanilla
+3. Mostrar cola
+4. Cambiar capacidad (sólo con cola vacía)
+0. Volver / salir
+Opción: 1
+Nombre del cliente: Ana
+
+============================================================================
+Selecciona el movimiento
+============================================================================
+1. Pago de servicio
+2. Depósito
+3. Retiro
+4. Compra de tiempo aire
+5. Consulta de saldo
+0. Volver / salir
+Opción: 2
+Cliente agregado. Turno: 1
+Turno | Nombre | Movimiento | Llegada                             
+------+--------+------------+-------------------------------------
+1     | Ana    | Depósito   | 2026-10-14 10:55:47 Hora estándar...
+En espera: 1 / 5
+Frente: 1 | Final: 1
+
+============================================================================
+C1. Ventanilla de un banco
+============================================================================
+1. Agregar cliente
+2. Atender en ventanilla
+3. Mostrar cola
+4. Cambiar capacidad (sólo con cola vacía)
+0. Volver / salir
+Opción: 1
+Nombre del cliente: Luis
+
+============================================================================
+Selecciona el movimiento
+============================================================================
+1. Pago de servicio
+2. Depósito
+3. Retiro
+4. Compra de tiempo aire
+5. Consulta de saldo
+0. Volver / salir
+Opción: 3
+Cliente agregado. Turno: 2
+Turno | Nombre | Movimiento | Llegada                             
+------+--------+------------+-------------------------------------
+1     | Ana    | Depósito   | 2026-10-14 10:55:47 Hora estándar...
+2     | Luis   | Retiro     | 2026-10-14 10:55:47 Hora estándar...
+En espera: 2 / 5
+Frente: 1 | Final: 2
+
+============================================================================
+C1. Ventanilla de un banco
+============================================================================
+1. Agregar cliente
+2. Atender en ventanilla
+3. Mostrar cola
+4. Cambiar capacidad (sólo con cola vacía)
+0. Volver / salir
+Opción: 2
+ATENDIDO: turno 1, Ana, Depósito
+Llegada: 2026-10-14 10:55:47 Hora estándar central (México) | Atención: 2026-10-14 10:55:47 Hora estándar central (México)
+Tiempo de espera: 0.00 segundos
+Turno | Nombre | Movimiento | Llegada                             
+------+--------+------------+-------------------------------------
+2     | Luis   | Retiro     | 2026-10-14 10:55:47 Hora estándar...
+En espera: 1 / 5
+Frente: 2 | Final: 2
+
+============================================================================
+C1. Ventanilla de un banco
+============================================================================
+1. Agregar cliente
+2. Atender en ventanilla
+3. Mostrar cola
+4. Cambiar capacidad (sólo con cola vacía)
+0. Volver / salir
+Opción: 0

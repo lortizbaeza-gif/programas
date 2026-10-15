@@ -1,0 +1,22 @@
+{
+  "orquestador": {
+    "name": "Coordinación",
+    "github": "lortizbaeza-gif"
+  },
+  "datos": {
+    "name": "Diana Gpe. Bojorquez Cetina",
+    "github": null
+  },
+  "backend": {
+    "name": "Genny D. Navarrete Aguilar",
+    "github": null
+  },
+  "frontend": {
+    "name": "Jilder Alex Dionisio Rojas",
+    "github": null
+  },
+  "calidad": {
+    "name": "Luisa Fernanda Ortiz Baeza",
+    "github": "lortizbaeza-gif"
+  }
+}

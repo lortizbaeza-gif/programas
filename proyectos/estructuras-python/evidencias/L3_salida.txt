@@ -1,0 +1,44 @@
+
+============================================================================
+L3. Aprobados y reprobados
+============================================================================
+1. Registrar alumno
+2. Mostrar las dos listas
+0. Volver / salir
+Opción: 1
+Nombre del alumno: Ana
+Calificación (0-10): 8.5
+Alumno registrado y clasificado.
+APROBADOS (7 o más)
+Nombre | Calificación
+-------+-------------
+Ana    | 8.5         
+REPROBADOS (menos de 7)
+(Sin registros)
+
+============================================================================
+L3. Aprobados y reprobados
+============================================================================
+1. Registrar alumno
+2. Mostrar las dos listas
+0. Volver / salir
+Opción: 1
+Nombre del alumno: Luis
+Calificación (0-10): 6.5
+Alumno registrado y clasificado.
+APROBADOS (7 o más)
+Nombre | Calificación
+-------+-------------
+Ana    | 8.5         
+REPROBADOS (menos de 7)
+Nombre | Calificación
+-------+-------------
+Luis   | 6.5         
+
+============================================================================
+L3. Aprobados y reprobados
+============================================================================
+1. Registrar alumno
+2. Mostrar las dos listas
+0. Volver / salir
+Opción: 0

@@ -1,0 +1,55 @@
+
+============================================================================
+L5. Listar palabras por letra
+============================================================================
+1. Agregar palabra
+2. Mostrar listas por inicial
+0. Volver / salir
+Opción: 1
+Palabra: Fresa
+Lista original: Fresa
+Lista F: Fresa
+
+============================================================================
+L5. Listar palabras por letra
+============================================================================
+1. Agregar palabra
+2. Mostrar listas por inicial
+0. Volver / salir
+Opción: 1
+Palabra: Fresca
+Lista original: Fresa, Fresca
+Lista F: Fresa, Fresca
+
+============================================================================
+L5. Listar palabras por letra
+============================================================================
+1. Agregar palabra
+2. Mostrar listas por inicial
+0. Volver / salir
+Opción: 1
+Palabra: Oso
+Lista original: Fresa, Fresca, Oso
+Lista F: Fresa, Fresca
+Lista O: Oso
+
+============================================================================
+L5. Listar palabras por letra
+============================================================================
+1. Agregar palabra
+2. Mostrar listas por inicial
+0. Volver / salir
+Opción: 1
+Palabra: Pez
+Lista original: Fresa, Fresca, Oso, Pez
+Lista F: Fresa, Fresca
+Lista O: Oso
+Lista P: Pez
+
+============================================================================
+L5. Listar palabras por letra
+============================================================================
+1. Agregar palabra
+2. Mostrar listas por inicial
+0. Volver / salir
+Opción: 0

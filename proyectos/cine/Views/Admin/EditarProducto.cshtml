@@ -1,0 +1,98 @@
+@model Cine.Models.ProductoAlimento
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Editar producto";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-4">Editar Producto</h2>
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+        <form asp-action="EditarProducto" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ProveedorId" />
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Categoría</label>
+                    <select asp-for="Categoria" class="form-select">
+                        <option value="Combo">Combo</option>
+                        <option value="Palomitas">Palomitas</option>
+                        <option value="Bebida">Bebida</option>
+                        <option value="Dulce">Dulce</option>
+                        <option value="Extra">Extra</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Precio</label>
+                    <input asp-for="Precio" type="number" min="0.01" step="0.01" class="form-control" required />
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Existencia</label>
+                    <input asp-for="Existencia" type="number" min="0" class="form-control" required />
+                    <span asp-validation-for="Existencia" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Avisar cuando queden</label>
+                    <input asp-for="StockMinimo" type="number" min="0" class="form-control" required />
+                    <span asp-validation-for="StockMinimo" class="text-danger"></span>
+                </div>
+                <div class="col-12"><hr /><h5>Contenido del combo</h5><p class="text-muted mb-0">Configura cuántas bebidas incluye y qué tamaño de palomitas permite.</p></div>
+                <div class="col-md-6">
+                    <label asp-for="CantidadBebidas" class="form-label">Cantidad de bebidas</label>
+                    <input asp-for="CantidadBebidas" type="number" min="0" max="6" class="form-control" />
+                    <small class="text-muted">Usa 0 si el producto no incluye bebida.</small>
+                    <span asp-validation-for="CantidadBebidas" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TamanoPalomitas" class="form-label">Palomitas incluidas</label>
+                    <select asp-for="TamanoPalomitas" class="form-select">
+                        <option>No aplica</option><option>Chicas</option><option>Medianas</option><option>Grandes</option><option>Cualquier tamaño</option>
+                    </select>
+                    <span asp-validation-for="TamanoPalomitas" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TamanoNachos" class="form-label">Nachos incluidos</label>
+                    <select asp-for="TamanoNachos" class="form-select">
+                        <option>No aplica</option><option>Chicos</option><option>Medianos</option><option>Grandes</option><option>Cualquier tamaño</option>
+                    </select>
+                    <span asp-validation-for="TamanoNachos" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input asp-for="PermiteExtraQueso" class="form-check-input" />
+                        <label asp-for="PermiteExtraQueso" class="form-check-label">Permitir extra queso en los nachos</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Cambiar imagen del combo o producto</label>
+                    <input name="imagenArchivo" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="form-control" onchange="previsualizarImagenProducto(this)" />
+                    <small class="text-muted">Déjalo vacío para conservar la imagen actual.</small>
+                    <span class="d-block text-danger" data-valmsg-for="imagenArchivo" data-valmsg-replace="true"></span>
+                    <img id="vistaProducto" src="@(string.IsNullOrWhiteSpace(Model.ImagenUrl) ? "/images/poster-placeholder.svg" : Model.ImagenUrl)" alt="Vista previa del producto" class="mt-2 rounded border" style="width:130px;height:130px;object-fit:cover" onerror="this.onerror=null;this.src='/images/poster-placeholder.svg';" />
+                    <details class="mt-2"><summary>O reemplazar con URL de imagen</summary><input asp-for="ImagenUrl" class="form-control mt-2" placeholder="https://sitio.com/imagen.jpg" oninput="previsualizarUrlProducto(this.value)" /></details>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="4" required></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-danger">Guardar cambios</button>
+                <a asp-action="Dulceria" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function previsualizarImagenProducto(input) { if (input.files && input.files[0]) document.getElementById('vistaProducto').src = URL.createObjectURL(input.files[0]); }
+function previsualizarUrlProducto(url) { document.getElementById('vistaProducto').src = url || '/images/poster-placeholder.svg'; }
+</script>

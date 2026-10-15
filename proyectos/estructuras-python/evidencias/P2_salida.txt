@@ -1,0 +1,3 @@
+Palabra, número o frase: Anita lava la tina
+Texto normalizado: anitalavalatina
+Sí es un palíndromo.

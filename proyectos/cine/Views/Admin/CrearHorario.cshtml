@@ -1,0 +1,64 @@
+@model Cine.Models.Horario
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Crear horario";
+}
+
+<div class="container-fluid">
+    <h2 class="fw-bold mb-2">Programar película en una sala</h2>
+    <p class="text-muted mb-3">Esta pantalla agrega otra función a una película que ya fue registrada.</p>
+    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <strong>¿La película todavía no aparece en la lista?</strong>
+            <div>Regístrala primero con título, clasificación, póster, sinopsis, salas, fecha y hora.</div>
+        </div>
+        <a asp-action="CrearPelicula" class="btn btn-primary">Crear película nueva</a>
+    </div>
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+        <form asp-action="CrearHorario" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Película</label>
+                    <select asp-for="PeliculaId" class="form-select">
+                        @foreach (var pelicula in ViewBag.Peliculas)
+                        {
+                            if (pelicula.Activa) { <option value="@pelicula.Id">@pelicula.Titulo (@pelicula.Duracion min)</option> }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Sala</label>
+                    <select asp-for="SalaId" class="form-select">
+                        @foreach (var sala in ViewBag.Salas)
+                        {
+                            <option value="@sala.Id">@sala.Nombre — @sala.Tipo @sala.Formato</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Formato de la función</label>
+                    <select asp-for="FormatoFuncion" class="form-select">
+                        <option value="2D">2D</option>
+                        <option value="3D">3D</option>
+                        <option value="4D">4D</option>
+                    </select>
+                    <small class="text-muted">3D y 4D solo se permiten si la sala tiene esa capacidad.</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fecha</label>
+                    <input asp-for="Fecha" type="date" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Hora</label>
+                    <input asp-for="Hora" type="time" class="form-control" />
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-danger">Guardar</button>
+                <a asp-action="Horarios" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
